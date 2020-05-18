@@ -1,0 +1,146 @@
+﻿<controls:MetroWindow x:Class="AssetExplorer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+        xmlns:local="clr-namespace:AssetExplorer" 
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:ml="clr-namespace:MoralesLarios.Utilities.Excel;assembly=MoralesLarios.Utilities" 
+        xmlns:jibcontrols="clr-namespace:Jib.WPF.Controls.DataGrid;assembly=Jib.WPF.Controls"
+        xmlns:viewmodel="clr-namespace:AssetExplorer.ViewModels"
+        mc:Ignorable="d"
+        Title="MainWindow"
+        WindowState="Maximized"
+        WindowStyle="None">
+    <Window.DataContext>
+        <viewmodel:MainViewModel/>
+    </Window.DataContext>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <TabControl x:Name="tabControl" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <TabItem Header="Active">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <jibcontrols:JibGrid Grid.ColumnSpan="2" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" AutoGenerateColumns="False" CanUserFreeze="True" CanUserSelectDistinct="True" CanUserGroup="False" CanUserFilter="True" x:Name="dataGridActive" Margin="10" ColumnWidth="*" FilteredItemsSource="{Binding ActiveAssets, UpdateSourceTrigger=PropertyChanged}" CanUserAddRows="False" SelectionMode="Extended" SelectionUnit="FullRow" SelectedItem="{Binding AssetSelected}" controls:DataGridHelper.EnableCellEditAssist="True">
+                        <!--<DataGrid.CellStyle>
+                            <Style TargetType="DataGridCell">
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="IsEditing" Value="True" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DataGrid.CellStyle>-->
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="PreparingCellForEdit">
+                                <i:InvokeCommandAction Command="{Binding OnAssetToBeModifiedCommand}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                        <jibcontrols:JibGrid.Columns>
+                            <DataGridCheckBoxColumn Header="Selected" Binding="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged}"/>
+                            <DataGridTextColumn Header="Device Type" Binding="{Binding DeviceType, UpdateSourceTrigger=PropertyChanged}"/>
+                            <DataGridTextColumn Header="Serial number" Binding="{Binding Serial, UpdateSourceTrigger=PropertyChanged}"/>
+                            <DataGridTextColumn Header="MAC Address" Binding="{Binding MAC, UpdateSourceTrigger=PropertyChanged}"/>
+                            <DataGridTextColumn Header="User" Binding="{Binding User, UpdateSourceTrigger=PropertyChanged}"/>
+                            <DataGridTextColumn Header="Knox ID" Binding="{Binding Knox, UpdateSourceTrigger=PropertyChanged}"/>
+                            <DataGridTextColumn Header="Department" Binding="{Binding Department, UpdateSourceTrigger=PropertyChanged}"/>
+                            <DataGridTextColumn Header="Location" Binding="{Binding Location, UpdateSourceTrigger=PropertyChanged}"/>
+                            <DataGridTextColumn Header="IP Address" Binding="{Binding IP, UpdateSourceTrigger=PropertyChanged}"/>
+                            <DataGridTextColumn Header="Output" Binding="{Binding Output, UpdateSourceTrigger=PropertyChanged}"/>
+                            <DataGridTextColumn Header="Input" Binding="{Binding Input, UpdateSourceTrigger=PropertyChanged}"/>
+                            <DataGridTextColumn Header="Repair" Binding="{Binding Repair, UpdateSourceTrigger=PropertyChanged}"/>
+                            <DataGridCheckBoxColumn Header="IsArchive" Binding="{Binding IsArchive, UpdateSourceTrigger=PropertyChanged}" Visibility="Hidden"/>
+                            <DataGridCheckBoxColumn Header="IsModified" Binding="{Binding IsModified, UpdateSourceTrigger=PropertyChanged}" Visibility="Hidden"/>
+                            <DataGridCheckBoxColumn Header="IsOld" Binding="{Binding IsOld, UpdateSourceTrigger=PropertyChanged}" Visibility="Hidden"/>
+                            <DataGridTextColumn Header="ID" Binding="{Binding Id, UpdateSourceTrigger=PropertyChanged}" Visibility="Hidden"/>
+                        </jibcontrols:JibGrid.Columns>
+                    </jibcontrols:JibGrid>
+                    <Button x:Name="SaveButton" Grid.Column="0" Grid.Row="0" Content="Save" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="10" Command="{Binding SaveButtonCommand}"/>
+                    <Button x:Name="DeleteButton" Grid.Column="1" Grid.Row="0" Content="Delete" HorizontalAlignment="Right" Margin="10" VerticalAlignment="Top" Width="75" CommandParameter="{Binding ElementName=dataGridActive, Path=SelectedItems}" Command="{Binding DeleteButtonCommand}"/>
+                    <Expander x:Name="expander" Header="Add Assets" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="2" Grid.ColumnSpan="2">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Button x:Name="AddButton2" Grid.Column="0" Grid.Row="0" Content="Add" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="10" Command="{Binding AddButtonCommand}"/>
+                            <DataGrid x:Name="dataGridAdd" Grid.Column="0" Grid.Row="1" HorizontalAlignment="Stretch" Margin="10" VerticalAlignment="Stretch" ItemsSource="{Binding AssetsToBeAdded}" ColumnWidth="*" ml:ExcelActions.EnabledCopyExcel ="True" ml:ExcelActions.EnabledPasteExcel="True" AutoGenerateColumns="False">
+                                <DataGrid.Columns>
+                                    <DataGridCheckBoxColumn Header="Selected" Binding="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged}" Visibility="Hidden"/>
+                                    <DataGridTextColumn Header="Device Type" Binding="{Binding DeviceType, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <DataGridTextColumn Header="Serial number" Binding="{Binding Serial, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <DataGridTextColumn Header="MAC Address" Binding="{Binding MAC, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <DataGridTextColumn Header="User" Binding="{Binding User, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <DataGridTextColumn Header="Knox ID" Binding="{Binding Knox, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <DataGridTextColumn Header="Department" Binding="{Binding Department, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <DataGridTextColumn Header="Location" Binding="{Binding Location, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <DataGridTextColumn Header="IP Address" Binding="{Binding IP, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <DataGridTextColumn Header="Output" Binding="{Binding Output, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <DataGridTextColumn Header="Input" Binding="{Binding Input, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <DataGridTextColumn Header="Repair" Binding="{Binding Repair, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <DataGridCheckBoxColumn Header="IsArchive" Binding="{Binding IsArchive, UpdateSourceTrigger=PropertyChanged}" Visibility="Hidden"/>
+                                    <DataGridCheckBoxColumn Header="IsModified" Binding="{Binding IsModified, UpdateSourceTrigger=PropertyChanged}" Visibility="Hidden"/>
+                                    <DataGridCheckBoxColumn Header="IsActive" Binding="{Binding IsActive, UpdateSourceTrigger=PropertyChanged}" Visibility="Hidden"/>
+                                    <DataGridTextColumn Header="ID" Binding="{Binding Id, UpdateSourceTrigger=PropertyChanged}" Visibility="Hidden"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+
+                        </Grid>
+                    </Expander>
+                </Grid>
+            </TabItem>
+            <TabItem Header="History">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <jibcontrols:JibGrid Grid.ColumnSpan="2" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" AutoGenerateColumns="False"   CanUserFreeze="True" CanUserSelectDistinct="True" CanUserGroup="False" CanUserFilter="True" Name="dataGridArchive" Margin="10" ColumnWidth="*" FilteredItemsSource="{Binding ArchiveAssets}" CanUserAddRows="False" controls:DataGridHelper.EnableCellEditAssist="True">
+                        <jibcontrols:JibGrid.Columns>
+                            <DataGridCheckBoxColumn Header="Selected" Binding="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged}" Visibility="Hidden"/>
+                            <DataGridTextColumn Header="Device Type" Binding="{Binding DeviceType, UpdateSourceTrigger=PropertyChanged}"/>
+                            <DataGridTextColumn Header="Serial number" Binding="{Binding Serial, UpdateSourceTrigger=PropertyChanged}"/>
+                            <DataGridTextColumn Header="MAC Address" Binding="{Binding MAC, UpdateSourceTrigger=PropertyChanged}"/>
+                            <DataGridTextColumn Header="User" Binding="{Binding User, UpdateSourceTrigger=PropertyChanged}"/>
+                            <DataGridTextColumn Header="Knox ID" Binding="{Binding Knox, UpdateSourceTrigger=PropertyChanged}"/>
+                            <DataGridTextColumn Header="Department" Binding="{Binding Department, UpdateSourceTrigger=PropertyChanged}"/>
+                            <DataGridTextColumn Header="Location" Binding="{Binding Location, UpdateSourceTrigger=PropertyChanged}"/>
+                            <DataGridTextColumn Header="IP Address" Binding="{Binding IP, UpdateSourceTrigger=PropertyChanged}"/>
+                            <DataGridTextColumn Header="Output" Binding="{Binding Output, UpdateSourceTrigger=PropertyChanged}"/>
+                            <DataGridTextColumn Header="Input" Binding="{Binding Input, UpdateSourceTrigger=PropertyChanged}"/>
+                            <DataGridTextColumn Header="Repair" Binding="{Binding Repair, UpdateSourceTrigger=PropertyChanged}"/>
+                            <DataGridCheckBoxColumn Header="IsArchive" Binding="{Binding IsArchive, UpdateSourceTrigger=PropertyChanged}" Visibility="Hidden"/>
+                            <DataGridCheckBoxColumn Header="IsModified" Binding="{Binding IsModified, UpdateSourceTrigger=PropertyChanged}" Visibility="Hidden"/>
+                            <DataGridCheckBoxColumn Header="IsActive" Binding="{Binding IsActive, UpdateSourceTrigger=PropertyChanged}" Visibility="Hidden"/>
+                            <DataGridTextColumn Header="ID" Binding="{Binding Id, UpdateSourceTrigger=PropertyChanged}" Visibility="Hidden"/>
+                        </jibcontrols:JibGrid.Columns>
+                    </jibcontrols:JibGrid>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</controls:MetroWindow>
