@@ -7,6 +7,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 
 namespace AssetExplorer.ViewModels
@@ -168,24 +169,28 @@ namespace AssetExplorer.ViewModels
 
         private void SaveData()
         {
-            for (int i = 0; i < ActiveAssets.Count; i++)
+            if (MessageBox.Show("Are you sure that you want to save the data", "Alert", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
             {
-                if (ActiveAssets[i].IsModified)
+                for (int i = 0; i < ActiveAssets.Count; i++)
                 {
-                    Context.Update(ActiveAssets[i]);
+                    if (ActiveAssets[i].IsModified)
+                    {
+                        Context.Update(ActiveAssets[i]);
+                    }
                 }
+
+                for (int i = 0; i < AssetsBeforeModification.Count; i++)
+                {
+                    Context.Add(AssetsBeforeModification[i]);
+                }
+
+
+                Context.SaveChanges();
+                AssetsBeforeModification.Clear();
+                ActiveAssets = new ObservableCollection<Asset>(Context.Assets.Where(item => item.IsArchive == false).ToList());
+                ArchiveAssets = new ObservableCollection<Asset>(Context.Assets.Where(item => item.IsArchive == true).ToList());
             }
-
-            for (int i = 0; i < AssetsBeforeModification.Count; i++)
-            {
-                Context.Add(AssetsBeforeModification[i]);
-            }
-
-
-            Context.SaveChanges();
-            AssetsBeforeModification.Clear();
-            ActiveAssets = new ObservableCollection<Asset>(Context.Assets.Where(item => item.IsArchive == false).ToList());
-            ArchiveAssets = new ObservableCollection<Asset>(Context.Assets.Where(item => item.IsArchive == true).ToList());
+            
         }
 
         private void OnAssetToBeModified()
@@ -195,36 +200,41 @@ namespace AssetExplorer.ViewModels
             AssetsBeforeModification.Add(OriginalAsset);
 
             AssetSelected.IsModified = true;
-            //ActiveAssets.
-            //Context.SaveChanges();
         }
 
         private void DeleteData()
         {
-            for (int i = 0; i < ActiveAssets.Count; i++)
+            if (MessageBox.Show("Are you sure that want to delete the selected data?", "Alert", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
             {
-                if (ActiveAssets[i].IsSelected)
+                for (int i = 0; i < ActiveAssets.Count; i++)
                 {
-                    ActiveAssets[i].IsArchive = true;
+                    if (ActiveAssets[i].IsSelected)
+                    {
+                        ActiveAssets[i].IsArchive = true;
+                    }
                 }
-            }
 
-            Context.SaveChanges();
-            ActiveAssets = new ObservableCollection<Asset>(Context.Assets.Where(item => item.IsArchive == false).ToList());
-            ArchiveAssets = new ObservableCollection<Asset>(Context.Assets.Where(item => item.IsArchive == true).ToList());
+                Context.SaveChanges();
+                ActiveAssets = new ObservableCollection<Asset>(Context.Assets.Where(item => item.IsArchive == false).ToList());
+                ArchiveAssets = new ObservableCollection<Asset>(Context.Assets.Where(item => item.IsArchive == true).ToList());
+            }
+            
         }
 
         private void AddData()
         {
-            for (int i = 0; i < AssetsToBeAdded.Count; i++)
+            if (MessageBox.Show("Are you sure that want to add the data?", "Alert", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
             {
-                AssetsToBeAdded[i].IsArchive = false;
-                Context.Add(AssetsToBeAdded[i]);
-            }
+                for (int i = 0; i < AssetsToBeAdded.Count; i++)
+                {
+                    AssetsToBeAdded[i].IsArchive = false;
+                    Context.Add(AssetsToBeAdded[i]);
+                }
 
-            Context.SaveChanges();
-            AssetsToBeAdded.Clear();
-            ActiveAssets = new ObservableCollection<Asset>(Context.Assets.Where(item => item.IsArchive == false).ToList());
+                Context.SaveChanges();
+                AssetsToBeAdded.Clear();
+                ActiveAssets = new ObservableCollection<Asset>(Context.Assets.Where(item => item.IsArchive == false).ToList());
+            }
         }
         #endregion
 
