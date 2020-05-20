@@ -1,4 +1,5 @@
-﻿using MahApps.Metro.Controls;
+﻿using AssetExplorer.Models;
+using MahApps.Metro.Controls;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,6 +25,14 @@ namespace AssetExplorer
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        private void dataGridActive_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            //for (int i = 0; i < dataGridActive.SelectedItems.Count; i++)
+            //{
+            //    (dataGridActive.SelectedItems[i] as Asset).IsSelected = true;
+            //}
         }
     }
 }

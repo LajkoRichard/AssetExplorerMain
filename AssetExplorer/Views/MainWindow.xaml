@@ -9,6 +9,7 @@
         xmlns:ml="clr-namespace:MoralesLarios.Utilities.Excel;assembly=MoralesLarios.Utilities" 
         xmlns:jibcontrols="clr-namespace:Jib.WPF.Controls.DataGrid;assembly=Jib.WPF.Controls"
         xmlns:viewmodel="clr-namespace:AssetExplorer.ViewModels"
+        xmlns:model="clr-namespace:AssetExplorer.Models"
         mc:Ignorable="d"
         Title="MainWindow"
         WindowState="Maximized"
@@ -36,7 +37,7 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <jibcontrols:JibGrid Grid.ColumnSpan="2" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" AutoGenerateColumns="False" CanUserFreeze="True" CanUserSelectDistinct="True" CanUserGroup="False" CanUserFilter="True" x:Name="dataGridActive" Margin="10" ColumnWidth="*" FilteredItemsSource="{Binding ActiveAssets, UpdateSourceTrigger=PropertyChanged}" CanUserAddRows="False" SelectionMode="Extended" SelectionUnit="FullRow" SelectedItem="{Binding AssetSelected}" controls:DataGridHelper.EnableCellEditAssist="True">
+                    <jibcontrols:JibGrid Grid.ColumnSpan="2" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" AutoGenerateColumns="False" CanUserFreeze="True" CanUserSelectDistinct="True" CanUserGroup="False" CanUserFilter="True" x:Name="dataGridActive" Margin="10" ColumnWidth="*" FilteredItemsSource="{Binding ActiveAssets, UpdateSourceTrigger=PropertyChanged}" CanUserAddRows="False" SelectionMode="Extended" SelectionUnit="FullRow" SelectedItem="{Binding AssetSelected}" controls:DataGridHelper.EnableCellEditAssist="True" SelectionChanged="dataGridActive_SelectionChanged">
                         <!--<DataGrid.CellStyle>
                             <Style TargetType="DataGridCell">
                                 <Style.Triggers>
@@ -64,6 +65,7 @@
                             <DataGridTextColumn Header="Output" Binding="{Binding Output, UpdateSourceTrigger=PropertyChanged}"/>
                             <DataGridTextColumn Header="Input" Binding="{Binding Input, UpdateSourceTrigger=PropertyChanged}"/>
                             <DataGridTextColumn Header="Repair" Binding="{Binding Repair, UpdateSourceTrigger=PropertyChanged}"/>
+                            <DataGridCheckBoxColumn Header="Scrapped" Binding="{Binding IsScrapped, UpdateSourceTrigger=PropertyChanged}"/>
                             <DataGridCheckBoxColumn Header="IsArchive" Binding="{Binding IsArchive, UpdateSourceTrigger=PropertyChanged}" Visibility="Hidden"/>
                             <DataGridCheckBoxColumn Header="IsModified" Binding="{Binding IsModified, UpdateSourceTrigger=PropertyChanged}" Visibility="Hidden"/>
                             <DataGridCheckBoxColumn Header="IsOld" Binding="{Binding IsOld, UpdateSourceTrigger=PropertyChanged}" Visibility="Hidden"/>
@@ -97,6 +99,7 @@
                                     <DataGridTextColumn Header="Output" Binding="{Binding Output, UpdateSourceTrigger=PropertyChanged}"/>
                                     <DataGridTextColumn Header="Input" Binding="{Binding Input, UpdateSourceTrigger=PropertyChanged}"/>
                                     <DataGridTextColumn Header="Repair" Binding="{Binding Repair, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <DataGridCheckBoxColumn Header="Scrapped" Binding="{Binding IsScrapped, UpdateSourceTrigger=PropertyChanged}"/>
                                     <DataGridCheckBoxColumn Header="IsArchive" Binding="{Binding IsArchive, UpdateSourceTrigger=PropertyChanged}" Visibility="Hidden"/>
                                     <DataGridCheckBoxColumn Header="IsModified" Binding="{Binding IsModified, UpdateSourceTrigger=PropertyChanged}" Visibility="Hidden"/>
                                     <DataGridCheckBoxColumn Header="IsActive" Binding="{Binding IsActive, UpdateSourceTrigger=PropertyChanged}" Visibility="Hidden"/>
@@ -133,6 +136,7 @@
                             <DataGridTextColumn Header="Output" Binding="{Binding Output, UpdateSourceTrigger=PropertyChanged}"/>
                             <DataGridTextColumn Header="Input" Binding="{Binding Input, UpdateSourceTrigger=PropertyChanged}"/>
                             <DataGridTextColumn Header="Repair" Binding="{Binding Repair, UpdateSourceTrigger=PropertyChanged}"/>
+                            <DataGridCheckBoxColumn Header="Scrapped" Binding="{Binding IsScrapped, UpdateSourceTrigger=PropertyChanged}"/>
                             <DataGridCheckBoxColumn Header="IsArchive" Binding="{Binding IsArchive, UpdateSourceTrigger=PropertyChanged}" Visibility="Hidden"/>
                             <DataGridCheckBoxColumn Header="IsModified" Binding="{Binding IsModified, UpdateSourceTrigger=PropertyChanged}" Visibility="Hidden"/>
                             <DataGridCheckBoxColumn Header="IsActive" Binding="{Binding IsActive, UpdateSourceTrigger=PropertyChanged}" Visibility="Hidden"/>

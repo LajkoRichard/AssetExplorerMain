@@ -186,9 +186,14 @@
     <Compile Include="Migrations\20200518095038_InitialCreate.designer.cs">
       <DependentUpon>20200518095038_InitialCreate.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\20200519122549_AddedIsScrapped.cs" />
+    <Compile Include="Migrations\20200519122549_AddedIsScrapped.designer.cs">
+      <DependentUpon>20200519122549_AddedIsScrapped.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\AssetContextModelSnapshot.cs" />
     <Compile Include="Models\Asset.cs" />
     <Compile Include="Models\AssetContext.cs" />
+    <Compile Include="Models\BindableMultiSelectDataGrid.cs" />
     <Compile Include="RelayCommand\RelayCommand.cs" />
     <Page Include="Views\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

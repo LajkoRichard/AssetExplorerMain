@@ -144,6 +144,18 @@ namespace AssetExplorer.Models
             }
         }
 
+        private bool _isScrapped;
+
+        public bool IsScrapped
+        {
+            get { return _isScrapped; }
+            set
+            {
+                _isScrapped = value;
+                OnPropertyChanged();
+            }
+        }
+
         private bool _isArchive;
 
         public bool IsArchive
@@ -202,7 +214,7 @@ namespace AssetExplorer.Models
 
         public Asset() { }
 
-        public Asset(string deviceType, string serial, string mAC, string user, string knox, string department, string location, string iP, string output, string input, string repair, bool isArchive, bool isActive, bool isSelected, bool isModified)
+        public Asset(string deviceType, string serial, string mAC, string user, string knox, string department, string location, string iP, string output, string input, string repair, bool isScrapped, bool isArchive, bool isActive, bool isSelected, bool isModified)
         {
             DeviceType = deviceType;
             Serial = serial;
@@ -215,6 +227,7 @@ namespace AssetExplorer.Models
             Output = output;
             Input = input;
             Repair = repair;
+            IsScrapped = isScrapped;
             IsArchive = isArchive;
             IsActive = isActive;
             IsSelected = isSelected;

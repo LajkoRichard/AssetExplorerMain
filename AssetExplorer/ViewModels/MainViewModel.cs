@@ -130,7 +130,7 @@ namespace AssetExplorer.ViewModels
                 return _deletecommand ?? (_deletecommand = new RelayCommand.RelayCommand(
                    x =>
                    {
-                       DeleteData();
+                       DeleteData(x as selecteditemcollection);
                    }));
             }
         }
@@ -195,24 +195,31 @@ namespace AssetExplorer.ViewModels
 
         private void OnAssetToBeModified()
         {
-            Asset OriginalAsset = new Asset(AssetSelected.DeviceType, AssetSelected.Serial, AssetSelected.MAC, AssetSelected.User, AssetSelected.Knox, AssetSelected.Department, AssetSelected.Location, AssetSelected.IP, AssetSelected.Output, AssetSelected.Input, AssetSelected.Repair, true, AssetSelected.IsActive, AssetSelected.IsSelected, AssetSelected.IsModified);
+            Asset OriginalAsset = new Asset(AssetSelected.DeviceType, AssetSelected.Serial, AssetSelected.MAC, AssetSelected.User, AssetSelected.Knox, AssetSelected.Department, AssetSelected.Location, AssetSelected.IP, AssetSelected.Output, AssetSelected.Input, AssetSelected.Repair, AssetSelected.IsScrapped, true, AssetSelected.IsActive, AssetSelected.IsSelected, AssetSelected.IsModified);
 
             AssetsBeforeModification.Add(OriginalAsset);
 
             AssetSelected.IsModified = true;
         }
 
-        private void DeleteData()
+        private void DeleteData(object SelectedAssets)
         {
             if (MessageBox.Show("Are you sure that want to delete the selected data?", "Alert", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
             {
-                for (int i = 0; i < ActiveAssets.Count; i++)
-                {
-                    if (ActiveAssets[i].IsSelected)
-                    {
-                        ActiveAssets[i].IsArchive = true;
-                    }
-                }
+                //for (int i = 0; i < ActiveAssets.Count; i++)
+                //{
+                //    if (ActiveAssets[i].IsSelected)
+                //    {
+                //        ActiveAssets[i].IsArchive = true;
+                //    }
+                //}
+
+                //ObservableCollection<Asset> SelectedAssetsCollection = SelectedAssets;
+
+                //for (int i = 0; i < SelectedAssets.Count; i++)
+                //{
+                //    //SelectedAssets[i].IsArchive = true;
+                //}
 
                 Context.SaveChanges();
                 ActiveAssets = new ObservableCollection<Asset>(Context.Assets.Where(item => item.IsArchive == false).ToList());
