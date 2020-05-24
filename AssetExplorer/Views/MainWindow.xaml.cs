@@ -27,12 +27,34 @@ namespace AssetExplorer
             InitializeComponent();
         }
 
-        private void dataGridActive_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        public void CheckSelection(object sender, RoutedEventArgs e)
         {
-            //for (int i = 0; i < dataGridActive.SelectedItems.Count; i++)
-            //{
-            //    (dataGridActive.SelectedItems[i] as Asset).IsSelected = true;
-            //}
+            var checkBox = e.OriginalSource as CheckBox;
+
+            Asset dataContext = checkBox?.DataContext as Asset;
+
+            if (dataGridActive.SelectedItems.Contains(dataContext))
+            {
+                for (int i = 0; i < dataGridActive.SelectedItems.Count; i++)
+                {
+                    (dataGridActive.SelectedItems[i] as Asset).IsSelected = true;
+                }
+            }
+        }
+
+        public void UncheckSelection(object sender, RoutedEventArgs e)
+        {
+            var checkBox = e.OriginalSource as CheckBox;
+
+            Asset dataContext = checkBox?.DataContext as Asset;
+
+            if (dataGridActive.SelectedItems.Contains(dataContext))
+            {
+                for (int i = 0; i < dataGridActive.SelectedItems.Count; i++)
+                {
+                    (dataGridActive.SelectedItems[i] as Asset).IsSelected = false;
+                }
+            }
         }
     }
 }

@@ -37,7 +37,7 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <jibcontrols:JibGrid Grid.ColumnSpan="2" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" AutoGenerateColumns="False" CanUserFreeze="True" CanUserSelectDistinct="True" CanUserGroup="False" CanUserFilter="True" x:Name="dataGridActive" Margin="10" ColumnWidth="*" FilteredItemsSource="{Binding ActiveAssets, UpdateSourceTrigger=PropertyChanged}" CanUserAddRows="False" SelectionMode="Extended" SelectionUnit="FullRow" SelectedItem="{Binding AssetSelected}" controls:DataGridHelper.EnableCellEditAssist="True" SelectionChanged="dataGridActive_SelectionChanged">
+                    <jibcontrols:JibGrid Grid.ColumnSpan="2" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" AutoGenerateColumns="False" CanUserFreeze="True" CanUserSelectDistinct="True" CanUserGroup="False" CanUserFilter="True" x:Name="dataGridActive" Margin="10" ColumnWidth="*" FilteredItemsSource="{Binding ActiveAssets, UpdateSourceTrigger=PropertyChanged}" CanUserAddRows="False" SelectionMode="Extended" SelectionUnit="FullRow" SelectedItem="{Binding AssetSelected}" controls:DataGridHelper.EnableCellEditAssist="True">
                         <!--<DataGrid.CellStyle>
                             <Style TargetType="DataGridCell">
                                 <Style.Triggers>
@@ -51,9 +51,44 @@
                             <i:EventTrigger EventName="PreparingCellForEdit">
                                 <i:InvokeCommandAction Command="{Binding OnAssetToBeModifiedCommand}"/>
                             </i:EventTrigger>
+                            <!--<i:EventTrigger EventName="CheckBox.Checked">
+                                <i:InvokeCommandAction CommandParameter="{Binding ElementName=dataGridActive, Path=SelectedItems}"
+                                                               Command="{Binding DeleteButtonCommand}" />
+                            </i:EventTrigger>-->
                         </i:Interaction.Triggers>
                         <jibcontrols:JibGrid.Columns>
-                            <DataGridCheckBoxColumn Header="Selected" Binding="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged}"/>
+                            <DataGridCheckBoxColumn Header="Selected" Binding="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged}">
+                                <!--<i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="Checked">
+                                        <i:InvokeCommandAction CommandParameter="{Binding ElementName=dataGridActive, Path=SelectedItems}"
+                                                               Command="{Binding DeleteButtonCommand}" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>-->
+                                <DataGridCheckBoxColumn.CellStyle>
+                                    <Style>
+                                        <EventSetter Event="CheckBox.Checked" Handler="CheckSelection"/>
+                                        <EventSetter Event="CheckBox.Unchecked" Handler="UncheckSelection"/>
+                                    </Style>
+                                </DataGridCheckBoxColumn.CellStyle>
+                            </DataGridCheckBoxColumn>
+                            <!--<DataGridTemplateColumn Header="Selected">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <CheckBox IsChecked="{Binding Path=IsSelected, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center">
+                                            <i:Interaction.Triggers>
+                                                <i:EventTrigger EventName="CheckBox.Checked">
+                                                    <i:InvokeCommandAction CommandParameter="{Binding ElementName=dataGridActive, Path=SelectedItems}"
+                                                                           Command="{Binding SaveButtonCommand}" />
+                                                </i:EventTrigger>
+                                                <i:EventTrigger EventName="CheckBox.Unchecked">
+                                                    <i:InvokeCommandAction CommandParameter="{Binding ElementName=dataGridActive, Path=SelectedItems}"
+                                                                           Command="{Binding SaveButtonCommand}" />
+                                                </i:EventTrigger>
+                                            </i:Interaction.Triggers>
+                                        </CheckBox>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>-->
                             <DataGridTextColumn Header="Device Type" Binding="{Binding DeviceType, UpdateSourceTrigger=PropertyChanged}"/>
                             <DataGridTextColumn Header="Serial number" Binding="{Binding Serial, UpdateSourceTrigger=PropertyChanged}"/>
                             <DataGridTextColumn Header="MAC Address" Binding="{Binding MAC, UpdateSourceTrigger=PropertyChanged}"/>
@@ -66,9 +101,8 @@
                             <DataGridTextColumn Header="Input" Binding="{Binding Input, UpdateSourceTrigger=PropertyChanged}"/>
                             <DataGridTextColumn Header="Repair" Binding="{Binding Repair, UpdateSourceTrigger=PropertyChanged}"/>
                             <DataGridCheckBoxColumn Header="Scrapped" Binding="{Binding IsScrapped, UpdateSourceTrigger=PropertyChanged}"/>
-                            <DataGridCheckBoxColumn Header="IsArchive" Binding="{Binding IsArchive, UpdateSourceTrigger=PropertyChanged}" Visibility="Hidden"/>
-                            <DataGridCheckBoxColumn Header="IsModified" Binding="{Binding IsModified, UpdateSourceTrigger=PropertyChanged}" Visibility="Hidden"/>
-                            <DataGridCheckBoxColumn Header="IsOld" Binding="{Binding IsOld, UpdateSourceTrigger=PropertyChanged}" Visibility="Hidden"/>
+                            <DataGridCheckBoxColumn Header="Archive" Binding="{Binding IsArchive, UpdateSourceTrigger=PropertyChanged}" Visibility="Hidden"/>
+                            <DataGridCheckBoxColumn Header="Modified" Binding="{Binding IsModified, UpdateSourceTrigger=PropertyChanged}" Visibility="Hidden"/>
                             <DataGridTextColumn Header="ID" Binding="{Binding Id, UpdateSourceTrigger=PropertyChanged}" Visibility="Hidden"/>
                         </jibcontrols:JibGrid.Columns>
                     </jibcontrols:JibGrid>

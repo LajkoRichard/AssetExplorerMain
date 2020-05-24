@@ -9,6 +9,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Controls.Primitives;
+using Jib.WPF.Controls.DataGrid;
 
 namespace AssetExplorer.ViewModels
 {
@@ -27,7 +29,6 @@ namespace AssetExplorer.ViewModels
                 OnPropertyChanged();
             }
         }
-
 
         private ObservableCollection<Asset> _activeassets;
 
@@ -130,7 +131,7 @@ namespace AssetExplorer.ViewModels
                 return _deletecommand ?? (_deletecommand = new RelayCommand.RelayCommand(
                    x =>
                    {
-                       DeleteData(x as selecteditemcollection);
+                       DeleteData(x);
                    }));
             }
         }
@@ -220,6 +221,14 @@ namespace AssetExplorer.ViewModels
                 //{
                 //    //SelectedAssets[i].IsArchive = true;
                 //}
+
+                System.Collections.IList items = (System.Collections.IList)SelectedAssets;
+                var collection = items.Cast<Asset>();
+
+                for (int i = 0; i < collection.Count(); i++)
+                {
+                    collection.ElementAt(i).IsArchive = true;
+                }
 
                 Context.SaveChanges();
                 ActiveAssets = new ObservableCollection<Asset>(Context.Assets.Where(item => item.IsArchive == false).ToList());
