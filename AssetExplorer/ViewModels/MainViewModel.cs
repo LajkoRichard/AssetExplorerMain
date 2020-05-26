@@ -131,7 +131,7 @@ namespace AssetExplorer.ViewModels
                 return _deletecommand ?? (_deletecommand = new RelayCommand.RelayCommand(
                    x =>
                    {
-                       DeleteData(x);
+                       DeleteData();
                    }));
             }
         }
@@ -160,6 +160,20 @@ namespace AssetExplorer.ViewModels
                    x =>
                    {
                        OnAssetToBeModified();
+                   }));
+            }
+        }
+
+        private ICommand _selectallcommand;
+
+        public ICommand SelectAllCommand
+        {
+            get
+            {
+                return _selectallcommand ?? (_selectallcommand = new RelayCommand.RelayCommand(
+                   x =>
+                   {
+                       SelectAll(x as bool?);
                    }));
             }
         }
@@ -203,17 +217,17 @@ namespace AssetExplorer.ViewModels
             AssetSelected.IsModified = true;
         }
 
-        private void DeleteData(object SelectedAssets)
+        private void DeleteData()
         {
             if (MessageBox.Show("Are you sure that want to delete the selected data?", "Alert", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
             {
-                //for (int i = 0; i < ActiveAssets.Count; i++)
-                //{
-                //    if (ActiveAssets[i].IsSelected)
-                //    {
-                //        ActiveAssets[i].IsArchive = true;
-                //    }
-                //}
+                for (int i = 0; i < ActiveAssets.Count; i++)
+                {
+                    if (ActiveAssets[i].IsSelected)
+                    {
+                        ActiveAssets[i].IsArchive = true;
+                    }
+                }
 
                 //ObservableCollection<Asset> SelectedAssetsCollection = SelectedAssets;
 
@@ -222,13 +236,13 @@ namespace AssetExplorer.ViewModels
                 //    //SelectedAssets[i].IsArchive = true;
                 //}
 
-                System.Collections.IList items = (System.Collections.IList)SelectedAssets;
-                var collection = items.Cast<Asset>();
+                //System.Collections.IList items = (System.Collections.IList)SelectedAssets;
+                //var collection = items.Cast<Asset>();
 
-                for (int i = 0; i < collection.Count(); i++)
-                {
-                    collection.ElementAt(i).IsArchive = true;
-                }
+                //for (int i = 0; i < collection.Count(); i++)
+                //{
+                //    collection.ElementAt(i).IsArchive = true;
+                //}
 
                 Context.SaveChanges();
                 ActiveAssets = new ObservableCollection<Asset>(Context.Assets.Where(item => item.IsArchive == false).ToList());
@@ -250,6 +264,14 @@ namespace AssetExplorer.ViewModels
                 Context.SaveChanges();
                 AssetsToBeAdded.Clear();
                 ActiveAssets = new ObservableCollection<Asset>(Context.Assets.Where(item => item.IsArchive == false).ToList());
+            }
+        }
+
+        private void SelectAll(bool? checkstatus)
+        {
+            for (int i = 0; i < ActiveAssets.Count; i++)
+            {
+                ActiveAssets[i].IsSelected = (bool)checkstatus;
             }
         }
         #endregion

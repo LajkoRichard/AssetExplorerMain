@@ -56,5 +56,35 @@ namespace AssetExplorer
                 }
             }
         }
+
+        public void CheckScrapped(object sender, RoutedEventArgs e)
+        {
+            var checkBox = e.OriginalSource as CheckBox;
+
+            Asset dataContext = checkBox?.DataContext as Asset;
+
+            if (dataGridActive.SelectedItems.Contains(dataContext))
+            {
+                for (int i = 0; i < dataGridActive.SelectedItems.Count; i++)
+                {
+                    (dataGridActive.SelectedItems[i] as Asset).IsScrapped = true;
+                }
+            }
+        }
+
+        public void UncheckScrapped(object sender, RoutedEventArgs e)
+        {
+            var checkBox = e.OriginalSource as CheckBox;
+
+            Asset dataContext = checkBox?.DataContext as Asset;
+
+            if (dataGridActive.SelectedItems.Contains(dataContext))
+            {
+                for (int i = 0; i < dataGridActive.SelectedItems.Count; i++)
+                {
+                    (dataGridActive.SelectedItems[i] as Asset).IsScrapped = false;
+                }
+            }
+        }
     }
 }
