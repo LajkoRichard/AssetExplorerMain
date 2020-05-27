@@ -11,7 +11,7 @@
         xmlns:viewmodel="clr-namespace:AssetExplorer.ViewModels"
         xmlns:model="clr-namespace:AssetExplorer.Models"
         mc:Ignorable="d"
-        Title="MainWindow"
+        Title="Asset Explorer"
         WindowState="Maximized"
         WindowStyle="None">
     <Window.DataContext>
@@ -58,25 +58,26 @@
                             </i:EventTrigger>-->
                         </i:Interaction.Triggers>
                         <jibcontrols:JibGrid.Columns>
-                            <DataGridCheckBoxColumn Header="Selected" Binding="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                                <!--<i:Interaction.Triggers>
+                            <!--<DataGridCheckBoxColumn Header="Selected" Binding="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                --><!--<i:Interaction.Triggers>
                                     <i:EventTrigger EventName="Checked">
                                         <i:InvokeCommandAction CommandParameter="{Binding ElementName=dataGridActive, Path=SelectedItems}"
                                                                Command="{Binding DeleteButtonCommand}" />
                                     </i:EventTrigger>
-                                </i:Interaction.Triggers>-->
+                                </i:Interaction.Triggers>--><!--
                                 <DataGridCheckBoxColumn.CellStyle>
                                     <Style>
                                         <EventSetter Event="CheckBox.Checked" Handler="CheckSelection"/>
                                         <EventSetter Event="CheckBox.Unchecked" Handler="UncheckSelection"/>
                                     </Style>
                                 </DataGridCheckBoxColumn.CellStyle>
-                            </DataGridCheckBoxColumn>
-                            <!--<DataGridTemplateColumn Header="Selected">
+                            </DataGridCheckBoxColumn>-->
+                            <DataGridTemplateColumn Header="Selected">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                        <CheckBox IsChecked="{Binding Path=IsSelected, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center">
-                                            <i:Interaction.Triggers>
+                                        <CheckBox IsChecked="{Binding Path=IsSelected, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center"           CommandParameter="{Binding ElementName=dataGridActive, Path=SelectedItems}"
+                                                                           Command="{Binding SaveButtonCommand}">
+                                            <!--<i:Interaction.Triggers>
                                                 <i:EventTrigger EventName="CheckBox.Checked">
                                                     <i:InvokeCommandAction CommandParameter="{Binding ElementName=dataGridActive, Path=SelectedItems}"
                                                                            Command="{Binding SaveButtonCommand}" />
@@ -85,11 +86,11 @@
                                                     <i:InvokeCommandAction CommandParameter="{Binding ElementName=dataGridActive, Path=SelectedItems}"
                                                                            Command="{Binding SaveButtonCommand}" />
                                                 </i:EventTrigger>
-                                            </i:Interaction.Triggers>
+                                            </i:Interaction.Triggers>-->
                                         </CheckBox>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>-->
+                            </DataGridTemplateColumn>
                             <DataGridTextColumn Header="Device Type" Binding="{Binding DeviceType, UpdateSourceTrigger=PropertyChanged}"/>
                             <DataGridTextColumn Header="Serial number" Binding="{Binding Serial, UpdateSourceTrigger=PropertyChanged}"/>
                             <DataGridTextColumn Header="MAC Address" Binding="{Binding MAC, UpdateSourceTrigger=PropertyChanged}"/>
