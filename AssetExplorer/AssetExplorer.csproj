@@ -38,7 +38,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>samsungicon.ico</ApplicationIcon>
+    <ApplicationIcon>Tribalmarkings-Colorflow-Samsung.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ControlzEx, Version=3.0.2.4, Culture=neutral, processorArchitecture=MSIL">
@@ -244,6 +244,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="samsungicon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="samsung-sdi-logo %281%29.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Tribalmarkings-Colorflow-Samsung.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
