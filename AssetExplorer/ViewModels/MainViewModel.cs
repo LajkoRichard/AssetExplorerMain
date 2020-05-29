@@ -90,6 +90,19 @@ namespace AssetExplorer.ViewModels
             }
         }
 
+        //private bool _isCheckBoxChecked;
+
+        //public bool IsCheckBoxChecked
+        //{
+        //    get { return _isCheckBoxChecked; }
+        //    set 
+        //    { 
+        //        _isCheckBoxChecked = value;
+        //        OnPropertyChanged();
+        //    }
+        //}
+
+
         #endregion
 
         #region Constructor
@@ -174,6 +187,20 @@ namespace AssetExplorer.ViewModels
                    x =>
                    {
                        SelectAll(x as bool?);
+                   }));
+            }
+        }
+
+        private ICommand _checkselectioncommand;
+
+        public ICommand CheckSelectionCommand
+        {
+            get
+            {
+                return _checkselectioncommand ?? (_checkselectioncommand = new RelayCommand.RelayCommand(
+                   x =>
+                   {
+                       CheckSelection(x as object);
                    }));
             }
         }
@@ -274,6 +301,12 @@ namespace AssetExplorer.ViewModels
                 ActiveAssets[i].IsSelected = (bool)checkstatus;
             }
         }
+
+        private void CheckSelection(object selectedrows)
+        {
+            object valami = selectedrows;
+        }
+
         #endregion
 
         #region INotifyPropertyChanged

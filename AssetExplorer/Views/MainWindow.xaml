@@ -56,9 +56,9 @@
                                                     <Expander>
                                                         <Expander.Header>
                                                             <StackPanel Orientation="Horizontal">
-                                                                <TextBlock Text=" NAME OF ITEMS: " Foreground="White"/>
+                                                                <!--<TextBlock Text=" NAME OF ITEMS: " Foreground="White"/>-->
                                                                 <TextBlock Text="{Binding Path=Name}" Foreground="White"/>
-                                                                <TextBlock Text=" NUMBER OF ITEMS: " Foreground="White"/>
+                                                                <TextBlock Text="NUMBER OF ITEMS:" Foreground="White" Margin="10,0,10,0"/>
                                                                 <TextBlock Text="{Binding Path=ItemCount}" Foreground="White"/>
                                                             </StackPanel>
                                                         </Expander.Header>
@@ -90,39 +90,40 @@
                             </i:EventTrigger>-->
                         </i:Interaction.Triggers>
                         <jibcontrols:JibGrid.Columns>
-                            <DataGridCheckBoxColumn Header="Selected" Binding="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                                <!--<i:Interaction.Triggers>
+                            <!--<DataGridCheckBoxColumn Header="Selected" Binding="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                --><!--<i:Interaction.Triggers>
                                     <i:EventTrigger EventName="Checked">
                                         <i:InvokeCommandAction CommandParameter="{Binding ElementName=dataGridActive, Path=SelectedItems}"
                                                                Command="{Binding DeleteButtonCommand}" />
                                     </i:EventTrigger>
-                                </i:Interaction.Triggers>-->
+                                </i:Interaction.Triggers>--><!--
                                 <DataGridCheckBoxColumn.CellStyle>
                                     <Style>
                                         <EventSetter Event="CheckBox.Checked" Handler="CheckSelection"/>
                                         <EventSetter Event="CheckBox.Unchecked" Handler="UncheckSelection"/>
                                     </Style>
                                 </DataGridCheckBoxColumn.CellStyle>
-                            </DataGridCheckBoxColumn>
-                            <!--<DataGridTemplateColumn Header="Selected">
+                            </DataGridCheckBoxColumn>-->
+                            <DataGridTemplateColumn Header="Selected">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                        <CheckBox IsChecked="{Binding Path=IsSelected, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center"           CommandParameter="{Binding ElementName=dataGridActive, Path=SelectedItems}"
-                                                                           Command="{Binding SaveButtonCommand}">
-                                            --><!--<i:Interaction.Triggers>
-                                                <i:EventTrigger EventName="CheckBox.Checked">
+                                        <CheckBox HorizontalAlignment="Center" VerticalAlignment="Center" IsChecked="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged}">
+                                        <!--<CheckBox IsChecked="{Binding Path=IsSelected, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center"           CommandParameter="{Binding ElementName=dataGridActive, Path=SelectedItems}"
+                                                                           Command="{Binding SaveButtonCommand}">-->
+                                                <i:Interaction.Triggers>
+                                                <i:EventTrigger EventName="Checked">
                                                     <i:InvokeCommandAction CommandParameter="{Binding ElementName=dataGridActive, Path=SelectedItems}"
-                                                                           Command="{Binding SaveButtonCommand}" />
+                                                                           Command="{Binding DataContext.CheckSelectionCommand, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}" />
                                                 </i:EventTrigger>
-                                                <i:EventTrigger EventName="CheckBox.Unchecked">
+                                                <i:EventTrigger EventName="Unchecked">
                                                     <i:InvokeCommandAction CommandParameter="{Binding ElementName=dataGridActive, Path=SelectedItems}"
-                                                                           Command="{Binding SaveButtonCommand}" />
+                                                                           Command="{Binding DataContext.CheckSelectionCommand, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}" />
                                                 </i:EventTrigger>
-                                            </i:Interaction.Triggers>--><!--
+                                            </i:Interaction.Triggers>
                                         </CheckBox>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>-->
+                            </DataGridTemplateColumn>
                             <DataGridTextColumn Header="Device Type" Binding="{Binding DeviceType, UpdateSourceTrigger=PropertyChanged}"/>
                             <DataGridTextColumn Header="Serial number" Binding="{Binding Serial, UpdateSourceTrigger=PropertyChanged}"/>
                             <DataGridTextColumn Header="MAC Address" Binding="{Binding MAC, UpdateSourceTrigger=PropertyChanged}"/>
@@ -216,9 +217,9 @@
                                                     <Expander>
                                                         <Expander.Header>
                                                             <StackPanel Orientation="Horizontal">
-                                                                <TextBlock Text=" NAME OF ITEMS: " Foreground="White"/>
+                                                                <!--<TextBlock Text=" NAME OF ITEMS: " Foreground="White"/>-->
                                                                 <TextBlock Text="{Binding Path=Name}" Foreground="White"/>
-                                                                <TextBlock Text=" NUMBER OF ITEMS: " Foreground="White"/>
+                                                                <TextBlock Text="NUMBER OF ITEMS:" Foreground="White" Margin="10,0,10,0"/>
                                                                 <TextBlock Text="{Binding Path=ItemCount}" Foreground="White"/>
                                                             </StackPanel>
                                                         </Expander.Header>

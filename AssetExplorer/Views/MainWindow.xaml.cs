@@ -33,11 +33,14 @@ namespace AssetExplorer
 
             Asset dataContext = checkBox?.DataContext as Asset;
 
+            //Asset dataContext = checkBox?.IsChecked
+
             if (dataGridActive.SelectedItems.Contains(dataContext))
             {
                 for (int i = 0; i < dataGridActive.SelectedItems.Count; i++)
                 {
                     (dataGridActive.SelectedItems[i] as Asset).IsSelected = true;
+                    //dataGridActive.Columns[0].
                 }
             }
         }
