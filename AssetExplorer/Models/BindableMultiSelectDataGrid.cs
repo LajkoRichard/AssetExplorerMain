@@ -17,8 +17,8 @@ namespace AssetExplorer.Models
 
         public new IList SelectedItems
         {
-            get { return (IList)GetValue(SelectedItemsProperty); }
-            set { throw new Exception("This property is read-only. To bind to it you must use 'Mode=OneWayToSource'."); }
+            get => (IList)GetValue(SelectedItemsProperty);
+            set => throw new Exception("This property is read-only. To bind to it you must use 'Mode=OneWayToSource'.");
         }
 
         protected override void OnSelectionChanged(SelectionChangedEventArgs e)

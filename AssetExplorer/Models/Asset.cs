@@ -17,7 +17,7 @@ namespace AssetExplorer.Models
 
         public string DeviceType
         {
-            get { return _deviceType; }
+            get => _deviceType;
             set
             {
                 _deviceType = value;
@@ -29,7 +29,7 @@ namespace AssetExplorer.Models
 
         public string Serial
         {
-            get { return _serial; }
+            get => _serial;
             set
             {
                 _serial = value;
@@ -40,7 +40,7 @@ namespace AssetExplorer.Models
 
         public string MAC
         {
-            get { return _mac; }
+            get => _mac;
             set
             {
                 _mac = value;
@@ -52,7 +52,7 @@ namespace AssetExplorer.Models
 
         public string User
         {
-            get { return _user; }
+            get => _user;
             set
             {
                 _user = value;
@@ -64,7 +64,7 @@ namespace AssetExplorer.Models
 
         public string Knox
         {
-            get { return _knox; }
+            get => _knox;
             set
             {
                 _knox = value;
@@ -76,7 +76,7 @@ namespace AssetExplorer.Models
 
         public string Department
         {
-            get { return _department; }
+            get => _department;
             set
             {
                 _department = value;
@@ -88,7 +88,7 @@ namespace AssetExplorer.Models
 
         public string Location
         {
-            get { return _location; }
+            get => _location;
             set
             {
                 _location = value;
@@ -100,7 +100,7 @@ namespace AssetExplorer.Models
 
         public string IP
         {
-            get { return _ip; }
+            get => _ip;
             set
             {
                 _ip = value;
@@ -112,7 +112,7 @@ namespace AssetExplorer.Models
 
         public string Output
         {
-            get { return _output; }
+            get => _output;
             set
             {
                 _output = value;
@@ -124,7 +124,7 @@ namespace AssetExplorer.Models
 
         public string Input
         {
-            get { return _input; }
+            get => _input;
             set
             {
                 _input = value;
@@ -136,7 +136,7 @@ namespace AssetExplorer.Models
 
         public string Repair
         {
-            get { return _repair; }
+            get => _repair;
             set
             {
                 _repair = value;
@@ -148,7 +148,7 @@ namespace AssetExplorer.Models
 
         public bool IsScrapped
         {
-            get { return _isScrapped; }
+            get => _isScrapped;
             set
             {
                 _isScrapped = value;
@@ -160,7 +160,7 @@ namespace AssetExplorer.Models
 
         public bool IsArchive
         {
-            get { return _isArchive; }
+            get => _isArchive;
             set
             {
                 _isArchive = value;
@@ -172,7 +172,7 @@ namespace AssetExplorer.Models
 
         public bool IsActive
         {
-            get { return _isActive; }
+            get => _isActive;
             set
             {
                 _isActive = value;
@@ -185,7 +185,7 @@ namespace AssetExplorer.Models
         [NotMapped]
         public bool IsSelected
         {
-            get { return _isSelected; }
+            get => _isSelected;
             set
             {
                 _isSelected = value;
@@ -198,7 +198,7 @@ namespace AssetExplorer.Models
         [NotMapped]
         public bool IsModified
         {
-            get { return _isModified; }
+            get => _isModified;
             set
             {
                 _isModified = value;

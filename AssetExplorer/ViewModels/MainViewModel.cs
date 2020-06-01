@@ -22,7 +22,7 @@ namespace AssetExplorer.ViewModels
 
         public AssetContext Context
         {
-            get { return _context; }
+            get => _context;
             set
             {
                 _context = value;
@@ -34,7 +34,7 @@ namespace AssetExplorer.ViewModels
 
         public ObservableCollection<Asset> ActiveAssets
         {
-            get { return _activeassets; }
+            get => _activeassets;
             set
             {
                 _activeassets = value;
@@ -46,7 +46,7 @@ namespace AssetExplorer.ViewModels
 
         public ObservableCollection<Asset> ArchiveAssets
         {
-            get { return _archiveassets; }
+            get => _archiveassets;
             set
             {
                 _archiveassets = value;
@@ -58,7 +58,7 @@ namespace AssetExplorer.ViewModels
 
         public ObservableCollection<Asset> AssetsToBeAdded
         {
-            get { return _assetsToBeAdded; }
+            get => _assetsToBeAdded;
             set
             {
                 _assetsToBeAdded = value;
@@ -70,7 +70,7 @@ namespace AssetExplorer.ViewModels
 
         public ObservableCollection<Asset> AssetsBeforeModification
         {
-            get { return _assetsToBeModified; }
+            get => _assetsToBeModified;
             set
             {
                 _assetsToBeModified = value;
@@ -82,26 +82,13 @@ namespace AssetExplorer.ViewModels
 
         public Asset AssetSelected
         {
-            get { return _assetSelected; }
+            get => _assetSelected;
             set
             {
                 _assetSelected = value;
                 OnPropertyChanged();
             }
         }
-
-        //private bool _isCheckBoxChecked;
-
-        //public bool IsCheckBoxChecked
-        //{
-        //    get { return _isCheckBoxChecked; }
-        //    set 
-        //    { 
-        //        _isCheckBoxChecked = value;
-        //        OnPropertyChanged();
-        //    }
-        //}
-
 
         #endregion
 
@@ -123,87 +110,83 @@ namespace AssetExplorer.ViewModels
 
         private ICommand _savecommand;
 
-        public ICommand SaveButtonCommand
-        {
-            get
-            {
-                return _savecommand ?? (_savecommand = new RelayCommand.RelayCommand(
+        public ICommand SaveButtonCommand => _savecommand ?? (_savecommand = new RelayCommand.RelayCommand(
                    x =>
                    {
                        SaveData();
                    }));
-            }
-        }
 
         private ICommand _deletecommand;
 
-        public ICommand DeleteButtonCommand
-        {
-            get
-            {
-                return _deletecommand ?? (_deletecommand = new RelayCommand.RelayCommand(
+        public ICommand DeleteButtonCommand => _deletecommand ?? (_deletecommand = new RelayCommand.RelayCommand(
                    x =>
                    {
                        DeleteData();
                    }));
-            }
-        }
 
         private ICommand _addcommand;
 
-        public ICommand AddButtonCommand
-        {
-            get
-            {
-                return _addcommand ?? (_addcommand = new RelayCommand.RelayCommand(
+        public ICommand AddButtonCommand => _addcommand ?? (_addcommand = new RelayCommand.RelayCommand(
                    x =>
                    {
                        AddData();
                    }));
-            }
-        }
 
         private ICommand _onassettobemodifiedcommand;
 
-        public ICommand OnAssetToBeModifiedCommand
-        {
-            get
-            {
-                return _onassettobemodifiedcommand ?? (_onassettobemodifiedcommand = new RelayCommand.RelayCommand(
+        public ICommand OnAssetToBeModifiedCommand => _onassettobemodifiedcommand ?? (_onassettobemodifiedcommand = new RelayCommand.RelayCommand(
                    x =>
                    {
                        OnAssetToBeModified();
                    }));
-            }
-        }
 
         private ICommand _selectallcommand;
 
-        public ICommand SelectAllCommand
-        {
-            get
-            {
-                return _selectallcommand ?? (_selectallcommand = new RelayCommand.RelayCommand(
+        public ICommand SelectAllCommand => _selectallcommand ?? (_selectallcommand = new RelayCommand.RelayCommand(
                    x =>
                    {
                        SelectAll(x as bool?);
                    }));
-            }
-        }
 
         private ICommand _checkselectioncommand;
 
-        public ICommand CheckSelectionCommand
-        {
-            get
-            {
-                return _checkselectioncommand ?? (_checkselectioncommand = new RelayCommand.RelayCommand(
+        public ICommand CheckSelectionCommand => _checkselectioncommand ?? (_checkselectioncommand = new RelayCommand.RelayCommand(
                    x =>
                    {
                        CheckSelection(x as object);
                    }));
-            }
-        }
+
+        private ICommand _uncheckselectioncommand;
+
+        public ICommand UnCheckSelectionCommand => _uncheckselectioncommand ?? (_uncheckselectioncommand = new RelayCommand.RelayCommand(
+                   x =>
+                   {
+                       UnCheckSelection(x as object);
+                   }));
+
+        private ICommand _checkcrappedselectioncommand;
+
+        public ICommand CheckScrappedSelectionCommand => _checkcrappedselectioncommand ?? (_checkcrappedselectioncommand = new RelayCommand.RelayCommand(
+                   x =>
+                   {
+                       CheckScrappedSelection(x as object);
+                   }));
+
+        private ICommand _uncheckscrappedselectioncommand;
+
+        public ICommand UnCheckScrappedSelectionCommand => _uncheckscrappedselectioncommand ?? (_uncheckscrappedselectioncommand = new RelayCommand.RelayCommand(
+                   x =>
+                   {
+                       UnCheckScrappedSelection(x as object);
+                   }));
+
+        private ICommand _reloaddatacommand;
+
+        public ICommand ReloadDataCommand => _reloaddatacommand ?? (_reloaddatacommand = new RelayCommand.RelayCommand(
+                   x =>
+                   {
+                       ReloadData();
+                   }));
 
         #endregion
 
@@ -256,21 +239,6 @@ namespace AssetExplorer.ViewModels
                     }
                 }
 
-                //ObservableCollection<Asset> SelectedAssetsCollection = SelectedAssets;
-
-                //for (int i = 0; i < SelectedAssets.Count; i++)
-                //{
-                //    //SelectedAssets[i].IsArchive = true;
-                //}
-
-                //System.Collections.IList items = (System.Collections.IList)SelectedAssets;
-                //var collection = items.Cast<Asset>();
-
-                //for (int i = 0; i < collection.Count(); i++)
-                //{
-                //    collection.ElementAt(i).IsArchive = true;
-                //}
-
                 Context.SaveChanges();
                 ActiveAssets = new ObservableCollection<Asset>(Context.Assets.Where(item => item.IsArchive == false).ToList());
                 ArchiveAssets = new ObservableCollection<Asset>(Context.Assets.Where(item => item.IsArchive == true).ToList());
@@ -304,7 +272,44 @@ namespace AssetExplorer.ViewModels
 
         private void CheckSelection(object selectedrows)
         {
-            object valami = selectedrows;
+            var collection = (System.Collections.IList)selectedrows;
+            for (int i = 0; i < collection.Count; i++)
+            {
+                (collection[i] as Asset).IsSelected = true;
+            }
+        }
+
+        private void UnCheckSelection(object selectedrows)
+        {
+            var collection = (System.Collections.IList)selectedrows;
+            for (int i = 0; i < collection.Count; i++)
+            {
+                (collection[i] as Asset).IsSelected = false;
+            }
+        }
+
+        private void CheckScrappedSelection(object selectedrows)
+        {
+            var collection = (System.Collections.IList)selectedrows;
+            for (int i = 0; i < collection.Count; i++)
+            {
+                (collection[i] as Asset).IsScrapped = true;
+            }
+        }
+
+        private void UnCheckScrappedSelection(object selectedrows)
+        {
+            var collection = (System.Collections.IList)selectedrows;
+            for (int i = 0; i < collection.Count; i++)
+            {
+                (collection[i] as Asset).IsScrapped = false;
+            }
+        }
+
+        private void ReloadData()
+        {
+            ActiveAssets = new ObservableCollection<Asset>(Context.Assets.Where(item => item.IsArchive == false).ToList());
+            ArchiveAssets = new ObservableCollection<Asset>(Context.Assets.Where(item => item.IsArchive == true).ToList());
         }
 
         #endregion
