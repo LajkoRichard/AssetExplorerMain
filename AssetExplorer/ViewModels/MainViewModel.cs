@@ -5,12 +5,11 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Controls.Primitives;
-using Jib.WPF.Controls.DataGrid;
+using System.Diagnostics;
+using System.Net.NetworkInformation;
 
 namespace AssetExplorer.ViewModels
 {
@@ -90,6 +89,62 @@ namespace AssetExplorer.ViewModels
             }
         }
 
+        private object _lockObject;
+
+        public object LockObject
+        {
+            get => _lockObject;
+            set => _lockObject = value;
+        }
+
+        private Stopwatch _stopWatch;
+
+        public Stopwatch StopWatch
+        {
+            get => _stopWatch;
+            set => _stopWatch = value;
+        }
+
+        private TimeSpan _timeSpan;
+
+        public TimeSpan TimeSpan
+        {
+            get => _timeSpan;
+            set => _timeSpan = value;
+        }
+
+        private int _nFound;
+
+        public int NFound
+        {
+            get => _nFound;
+            set => _nFound = value;
+        }
+
+        private GridLength _rowHeight;
+
+        public GridLength RowHeight
+        {
+            get => _rowHeight;
+            set
+            {
+                _rowHeight = value;
+                OnPropertyChanged();
+            }
+        }
+
+        //private bool _isExpanderExpanded;
+
+        //public bool IsExpanderExpanded
+        //{
+        //    get => _isExpanderExpanded;
+        //    set
+        //    {
+        //        _isExpanderExpanded = value;
+        //        OnPropertyChanged();
+        //    }
+        //}
+
         #endregion
 
         #region Constructor
@@ -102,6 +157,10 @@ namespace AssetExplorer.ViewModels
             AssetsToBeAdded = new ObservableCollection<Asset>();
             AssetsBeforeModification = new ObservableCollection<Asset>();
             AssetSelected = new Asset();
+            LockObject = new object();
+            StopWatch = new Stopwatch();
+            NFound = 0;
+            RowHeight = new GridLength(1.0, GridUnitType.Auto);
         }
 
         #endregion
@@ -186,6 +245,30 @@ namespace AssetExplorer.ViewModels
                    x =>
                    {
                        ReloadData();
+                   }));
+
+        private ICommand _pingbuttoncommand;
+
+        public ICommand PingButtonCommand => _pingbuttoncommand ?? (_pingbuttoncommand = new RelayCommand.RelayCommand(
+                   x =>
+                   {
+                       Ping();
+                   }));
+
+        private ICommand _onexpanderexpandedcommand;
+
+        public ICommand OnExpanderExpandedCommand => _onexpanderexpandedcommand ?? (_onexpanderexpandedcommand = new RelayCommand.RelayCommand(
+                   x =>
+                   {
+                       OnExpanderExpanded();
+                   }));
+
+        private ICommand _onexpandercollapsedcommand;
+
+        public ICommand OnExpanderCollapsedCommand => _onexpandercollapsedcommand ?? (_onexpandercollapsedcommand = new RelayCommand.RelayCommand(
+                   x =>
+                   {
+                       OnExpanderCollapsed();
                    }));
 
         #endregion
@@ -310,6 +393,55 @@ namespace AssetExplorer.ViewModels
         {
             ActiveAssets = new ObservableCollection<Asset>(Context.Assets.Where(item => item.IsArchive == false).ToList());
             ArchiveAssets = new ObservableCollection<Asset>(Context.Assets.Where(item => item.IsArchive == true).ToList());
+        }
+
+        private async void Ping()
+        {
+            NFound = 0;
+
+            var tasks = new List<Task>();
+
+            StopWatch.Start();
+
+            for (int i = 0; i < ActiveAssets.Count; i++)
+            {
+                Ping p = new Ping();
+                var task = PingAndUpdateAsync(p, ActiveAssets[i]);
+                tasks.Add(task);
+            }
+
+            await Task.WhenAll(tasks).ContinueWith(t =>
+            {
+                StopWatch.Stop();
+                TimeSpan = StopWatch.Elapsed;
+                MessageBox.Show(NFound.ToString() + " devices found! Elapsed time: " + TimeSpan.ToString(), "Asynchronous");
+            });
+        }
+
+        private async Task PingAndUpdateAsync(Ping ping, Asset asset)
+        {
+            var reply = await ping.SendPingAsync(asset.IP, 100);
+
+            if (reply.Status == IPStatus.Success)
+            {
+                lock (LockObject)
+                {
+                    asset.IsActive = true;
+                    Context.SaveChanges();
+                    NFound++;
+                }
+            }
+        }
+
+        private void OnExpanderExpanded()
+        {
+            RowHeight = new GridLength(1.0, GridUnitType.Star);
+            //SystemIcons.Shield
+        }
+
+        private void OnExpanderCollapsed()
+        {
+            RowHeight = new GridLength(1.0, GridUnitType.Auto);
         }
 
         #endregion

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace AssetExplorer.Models
 {
@@ -103,7 +104,30 @@ namespace AssetExplorer.Models
             get => _ip;
             set
             {
-                _ip = value;
+                if (value == "" || value == "t")
+                {
+                    _ip = value;
+                }
+                else
+                {
+                    var parts = value.Split('.');
+                    bool isValidIPAddress = parts.Length == 4 && !parts.Any(
+                       x =>
+                       {
+                           int y;
+                           return Int32.TryParse(x, out y) && y > 255 || y < 1;
+                       });
+
+                    if (isValidIPAddress)
+                    {
+                        _ip = value;
+                    }
+                    else
+                    {
+                        MessageBox.Show("The given value is not a valid IP address!", "Invalid IP address", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+
                 OnPropertyChanged();
             }
         }
