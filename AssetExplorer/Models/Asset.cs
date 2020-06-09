@@ -104,29 +104,31 @@ namespace AssetExplorer.Models
             get => _ip;
             set
             {
-                if (value == "" || value == "t")
-                {
-                    _ip = value;
-                }
-                else
-                {
-                    var parts = value.Split('.');
-                    bool isValidIPAddress = parts.Length == 4 && !parts.Any(
-                       x =>
-                       {
-                           int y;
-                           return Int32.TryParse(x, out y) && y > 255 || y < 1;
-                       });
+                //if (value == "" || value == "valami")
+                //{
+                //    _ip = value;
+                //}
+                //else
+                //{
+                //    var parts = value.Split('.');
+                //    bool isValidIPAddress = parts.Length == 4 && !parts.Any(
+                //       x =>
+                //       {
+                //           int y;
+                //           return Int32.TryParse(x, out y) && y > 255 || y < 1;
+                //       });
 
-                    if (isValidIPAddress)
-                    {
-                        _ip = value;
-                    }
-                    else
-                    {
-                        MessageBox.Show("The given value is not a valid IP address!", "Invalid IP address", MessageBoxButton.OK, MessageBoxImage.Error);
-                    }
-                }
+                //    if (isValidIPAddress)
+                //    {
+                //        _ip = value;
+                //    }
+                //    else
+                //    {
+                //        MessageBox.Show("The given value is not a valid IP address!", "Invalid IP address", MessageBoxButton.OK, MessageBoxImage.Error);
+                //    }
+                //}
+
+                _ip = value;
 
                 OnPropertyChanged();
             }
@@ -204,6 +206,18 @@ namespace AssetExplorer.Models
             }
         }
 
+        private DateTime _lastActiveTime;
+
+        public DateTime LastActiveTime
+        {
+            get => _lastActiveTime;
+            set
+            {
+                _lastActiveTime = value;
+                OnPropertyChanged();
+            }
+        }
+
         [NotMapped]
         private bool _isSelected;
         [NotMapped]
@@ -238,7 +252,7 @@ namespace AssetExplorer.Models
 
         public Asset() { }
 
-        public Asset(string deviceType, string serial, string mAC, string user, string knox, string department, string location, string iP, string output, string input, string repair, bool isScrapped, bool isArchive, bool isActive, bool isSelected, bool isModified)
+        public Asset(string deviceType, string serial, string mAC, string user, string knox, string department, string location, string iP, string output, string input, string repair, bool isScrapped, bool isArchive, bool isActive, DateTime lastActiveTime , bool isSelected, bool isModified)
         {
             DeviceType = deviceType;
             Serial = serial;
@@ -254,6 +268,7 @@ namespace AssetExplorer.Models
             IsScrapped = isScrapped;
             IsArchive = isArchive;
             IsActive = isActive;
+            LastActiveTime = lastActiveTime;
             IsSelected = isSelected;
             IsModified = isModified;
         }

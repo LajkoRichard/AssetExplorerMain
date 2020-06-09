@@ -303,7 +303,7 @@ namespace AssetExplorer.ViewModels
 
         private void OnAssetToBeModified()
         {
-            Asset OriginalAsset = new Asset(AssetSelected.DeviceType, AssetSelected.Serial, AssetSelected.MAC, AssetSelected.User, AssetSelected.Knox, AssetSelected.Department, AssetSelected.Location, AssetSelected.IP, AssetSelected.Output, AssetSelected.Input, AssetSelected.Repair, AssetSelected.IsScrapped, true, AssetSelected.IsActive, AssetSelected.IsSelected, AssetSelected.IsModified);
+            Asset OriginalAsset = new Asset(AssetSelected.DeviceType, AssetSelected.Serial, AssetSelected.MAC, AssetSelected.User, AssetSelected.Knox, AssetSelected.Department, AssetSelected.Location, AssetSelected.IP, AssetSelected.Output, AssetSelected.Input, AssetSelected.Repair, AssetSelected.IsScrapped, true, AssetSelected.IsActive, AssetSelected.LastActiveTime, AssetSelected.IsSelected, AssetSelected.IsModified);
 
             AssetsBeforeModification.Add(OriginalAsset);
 
@@ -427,6 +427,7 @@ namespace AssetExplorer.ViewModels
                 lock (LockObject)
                 {
                     asset.IsActive = true;
+                    asset.LastActiveTime = DateTime.Now;
                     Context.SaveChanges();
                     NFound++;
                 }
@@ -436,7 +437,6 @@ namespace AssetExplorer.ViewModels
         private void OnExpanderExpanded()
         {
             RowHeight = new GridLength(1.0, GridUnitType.Star);
-            //SystemIcons.Shield
         }
 
         private void OnExpanderCollapsed()

@@ -13,7 +13,8 @@
         mc:Ignorable="d"
         Title="Asset Explorer"
         WindowState="Maximized"
-        WindowStyle="None">
+        WindowStyle="None"
+        xml:lang="hu-HU">
     <Window.DataContext>
         <viewmodel:MainViewModel/>
     </Window.DataContext>
@@ -88,7 +89,7 @@
                             </i:EventTrigger>
                         </i:Interaction.Triggers>
                         <jibcontrols:JibGrid.Columns>
-                            <DataGridTemplateColumn Header="Selected">
+                            <DataGridTemplateColumn Header="Selected" Width="50">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <CheckBox HorizontalAlignment="Center" VerticalAlignment="Center" IsChecked="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged}">
@@ -117,7 +118,7 @@
                             <DataGridTextColumn Header="Output" Binding="{Binding Output, UpdateSourceTrigger=PropertyChanged}"/>
                             <DataGridTextColumn Header="Input" Binding="{Binding Input, UpdateSourceTrigger=PropertyChanged}"/>
                             <DataGridTextColumn Header="Repair" Binding="{Binding Repair, UpdateSourceTrigger=PropertyChanged}"/>
-                            <DataGridTemplateColumn Header="Scrapped">
+                            <DataGridTemplateColumn Header="Scrapped" Width="50">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <CheckBox HorizontalAlignment="Center" VerticalAlignment="Center" IsChecked="{Binding IsScrapped, UpdateSourceTrigger=PropertyChanged}">
@@ -135,7 +136,7 @@
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
-                            <DataGridCheckBoxColumn Header="Active" Binding="{Binding IsActive, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True">
+                            <DataGridCheckBoxColumn Header="Active" Width="50" Binding="{Binding IsActive, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True">
                                 <DataGridCheckBoxColumn.ElementStyle>
                                     <Style TargetType="{x:Type CheckBox}">
                                         <Setter Property="IsEnabled" Value="False" />
@@ -161,6 +162,7 @@
                                 </DataGridCheckBoxColumn.ElementStyle>
                             </DataGridCheckBoxColumn>
                             <!--<DataGridCheckBoxColumn Header="Active" Binding="{Binding IsActive, UpdateSourceTrigger=PropertyChanged}"/>-->
+                            <DataGridTextColumn Header="Last Active Time" Binding="{Binding LastActiveTime, UpdateSourceTrigger=PropertyChanged}"/>
                             <DataGridCheckBoxColumn Header="Archive" Binding="{Binding IsArchive, UpdateSourceTrigger=PropertyChanged}" Visibility="Hidden"/>
                             <DataGridCheckBoxColumn Header="Modified" Binding="{Binding IsModified, UpdateSourceTrigger=PropertyChanged}" Visibility="Hidden"/>
                             <DataGridTextColumn Header="ID" Binding="{Binding Id, UpdateSourceTrigger=PropertyChanged}" Visibility="Hidden"/>

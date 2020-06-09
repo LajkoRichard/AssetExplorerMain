@@ -191,6 +191,10 @@
     <Compile Include="Migrations\20200519122549_AddedIsScrapped.designer.cs">
       <DependentUpon>20200519122549_AddedIsScrapped.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\20200609085014_LastActiveTimeAdded.cs" />
+    <Compile Include="Migrations\20200609085014_LastActiveTimeAdded.designer.cs">
+      <DependentUpon>20200609085014_LastActiveTimeAdded.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\AssetContextModelSnapshot.cs" />
     <Compile Include="Models\Asset.cs" />
     <Compile Include="Models\AssetContext.cs" />

@@ -3,14 +3,16 @@ using System;
 using AssetExplorer.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace AssetExplorer.Migrations
 {
     [DbContext(typeof(AssetContext))]
-    partial class AssetContextModelSnapshot : ModelSnapshot
+    [Migration("20200609085014_LastActiveTimeAdded")]
+    partial class LastActiveTimeAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
