@@ -296,7 +296,10 @@ namespace Jib.WPF.Controls.DataGrid
 
         private void txtFilter_KeyUp(object sender, KeyEventArgs e)
         {
-            FilterText = ((TextBox)sender).Text;
+            if (e.Key == Key.Enter)
+            {
+                FilterText = ((TextBox)sender).Text;
+            }
         }
 
         public Predicate<object> GeneratePredicate()
