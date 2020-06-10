@@ -47,7 +47,7 @@
                                 <GroupStyle.HeaderTemplate>
                                     <DataTemplate>
                                         <StackPanel>
-                                            <TextBlock Text="{Binding Path=Name}" />
+                                            <TextBlock Text="{Binding Path=Name}"/>
                                         </StackPanel>
                                     </DataTemplate>
                                 </GroupStyle.HeaderTemplate>
@@ -89,7 +89,7 @@
                             </i:EventTrigger>
                         </i:Interaction.Triggers>
                         <jibcontrols:JibGrid.Columns>
-                            <DataGridTemplateColumn Header="Selected" Width="50">
+                            <DataGridTemplateColumn Header=" Selected" Width="80" SortMemberPath="IsSelected">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <CheckBox HorizontalAlignment="Center" VerticalAlignment="Center" IsChecked="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged}">
@@ -107,18 +107,28 @@
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
-                            <DataGridTextColumn Header="Device Type" Binding="{Binding DeviceType, UpdateSourceTrigger=PropertyChanged}"/>
-                            <DataGridTextColumn Header="Serial number" Binding="{Binding Serial, UpdateSourceTrigger=PropertyChanged}"/>
-                            <DataGridTextColumn Header="MAC Address" Binding="{Binding MAC, UpdateSourceTrigger=PropertyChanged}"/>
-                            <DataGridTextColumn Header="User" Binding="{Binding User, UpdateSourceTrigger=PropertyChanged}"/>
-                            <DataGridTextColumn Header="Knox ID" Binding="{Binding Knox, UpdateSourceTrigger=PropertyChanged}"/>
-                            <DataGridTextColumn Header="Department" Binding="{Binding Department, UpdateSourceTrigger=PropertyChanged}"/>
-                            <DataGridTextColumn Header="Location" Binding="{Binding Location, UpdateSourceTrigger=PropertyChanged}"/>
-                            <DataGridTextColumn Header="IP Address" Binding="{Binding IP, UpdateSourceTrigger=LostFocus}"/>
-                            <DataGridTextColumn Header="Output" Binding="{Binding Output, UpdateSourceTrigger=PropertyChanged}"/>
-                            <DataGridTextColumn Header="Input" Binding="{Binding Input, UpdateSourceTrigger=PropertyChanged}"/>
-                            <DataGridTextColumn Header="Repair" Binding="{Binding Repair, UpdateSourceTrigger=PropertyChanged}"/>
-                            <DataGridTemplateColumn Header="Scrapped" Width="50">
+                            <!--<DataGridCheckBoxColumn Header="Selected" Width="50" Binding="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged}">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="Checked">
+                                        <i:InvokeCommandAction CommandParameter="{Binding Path=SelectedItems, RelativeSource={RelativeSource FindAncestor, AncestorType=jibcontrols:JibGrid}}" Command="{Binding DataContext.CheckSelectionCommand, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}" />
+                                    </i:EventTrigger>
+                                    <i:EventTrigger EventName="Unchecked">
+                                        <i:InvokeCommandAction CommandParameter="{Binding Path=SelectedItems, RelativeSource={RelativeSource FindAncestor, AncestorType=jibcontrols:JibGrid}}" Command="{Binding DataContext.UnCheckSelectionCommand, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </DataGridCheckBoxColumn>-->
+                            <DataGridTextColumn Header=" Device Type" Binding="{Binding DeviceType, UpdateSourceTrigger=PropertyChanged}"/>
+                            <DataGridTextColumn Header=" Serial number" Binding="{Binding Serial, UpdateSourceTrigger=PropertyChanged}"/>
+                            <DataGridTextColumn Header=" MAC Address" Binding="{Binding MAC, UpdateSourceTrigger=PropertyChanged}"/>
+                            <DataGridTextColumn Header=" User" Binding="{Binding User, UpdateSourceTrigger=PropertyChanged}"/>
+                            <DataGridTextColumn Header=" Knox ID" Binding="{Binding Knox, UpdateSourceTrigger=PropertyChanged}"/>
+                            <DataGridTextColumn Header=" Department" Binding="{Binding Department, UpdateSourceTrigger=PropertyChanged}"/>
+                            <DataGridTextColumn Header=" Location" Binding="{Binding Location, UpdateSourceTrigger=PropertyChanged}"/>
+                            <DataGridTextColumn Header=" IP Address" Binding="{Binding IP, UpdateSourceTrigger=LostFocus}"/>
+                            <DataGridTextColumn Header=" Output" Binding="{Binding Output, UpdateSourceTrigger=PropertyChanged}"/>
+                            <DataGridTextColumn Header=" Input" Binding="{Binding Input, UpdateSourceTrigger=PropertyChanged}"/>
+                            <DataGridTextColumn Header=" Repair" Binding="{Binding Repair, UpdateSourceTrigger=PropertyChanged}"/>
+                            <DataGridTemplateColumn Header=" Scrapped" Width="80" SortMemberPath="IsScrapped">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <CheckBox HorizontalAlignment="Center" VerticalAlignment="Center" IsChecked="{Binding IsScrapped, UpdateSourceTrigger=PropertyChanged}">
@@ -131,12 +141,25 @@
                                                     <i:InvokeCommandAction CommandParameter="{Binding Path=SelectedItems, RelativeSource={RelativeSource FindAncestor, AncestorType=jibcontrols:JibGrid}}"
                                                                            Command="{Binding DataContext.UnCheckScrappedSelectionCommand, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}" />
                                                 </i:EventTrigger>
+                                                <i:EventTrigger EventName="Click">
+                                                    <i:InvokeCommandAction Command="{Binding DataContext.OnAssetToBeModifiedCommand, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"/>
+                                                </i:EventTrigger>
                                             </i:Interaction.Triggers>
                                         </CheckBox>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
-                            <DataGridCheckBoxColumn Header="Active" Width="50" Binding="{Binding IsActive, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True">
+                            <!--<DataGridCheckBoxColumn Header="Scrapped" Width="50" Binding="{Binding IsScrapped, UpdateSourceTrigger=PropertyChanged}">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="CheckBox.Checked">
+                                        <i:InvokeCommandAction CommandParameter="{Binding ElementName=dataGridActive, Path=SelectedItems}" Command="{Binding CheckScrappedSelectionCommand}" />
+                                    </i:EventTrigger>
+                                    <i:EventTrigger EventName="CheckBox.Unchecked">
+                                        <i:InvokeCommandAction CommandParameter="{Binding ElementName=dataGridActive, Path=SelectedItems}" Command="{Binding UnCheckScrappedSelectionCommand}" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </DataGridCheckBoxColumn>-->
+                            <DataGridCheckBoxColumn Header=" Active" Width="80" Binding="{Binding IsActive, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True">
                                 <DataGridCheckBoxColumn.ElementStyle>
                                     <Style TargetType="{x:Type CheckBox}">
                                         <Setter Property="IsEnabled" Value="False" />
@@ -148,7 +171,7 @@
                                                             <Style TargetType="{x:Type Image}">
                                                                 <Setter Property="Source" Value="../Images/redcircle.png" />
                                                                 <Style.Triggers>
-                                                                    <DataTrigger Binding="{Binding IsChecked, RelativeSource={RelativeSource                                                    AncestorType=CheckBox}}" Value="True">
+                                                                    <DataTrigger Binding="{Binding IsChecked, RelativeSource={RelativeSource AncestorType=CheckBox}}" Value="True">
                                                                         <Setter Property="Source" Value="../Images/greencircle.png" />
                                                                     </DataTrigger>
                                                                 </Style.Triggers>
@@ -162,7 +185,7 @@
                                 </DataGridCheckBoxColumn.ElementStyle>
                             </DataGridCheckBoxColumn>
                             <!--<DataGridCheckBoxColumn Header="Active" Binding="{Binding IsActive, UpdateSourceTrigger=PropertyChanged}"/>-->
-                            <DataGridTextColumn Header="Last Active Time" Binding="{Binding LastActiveTime, UpdateSourceTrigger=PropertyChanged}"/>
+                            <DataGridTextColumn Header=" Last Active Time" Binding="{Binding LastActiveTime, UpdateSourceTrigger=PropertyChanged}"/>
                             <DataGridCheckBoxColumn Header="Archive" Binding="{Binding IsArchive, UpdateSourceTrigger=PropertyChanged}" Visibility="Hidden"/>
                             <DataGridCheckBoxColumn Header="Modified" Binding="{Binding IsModified, UpdateSourceTrigger=PropertyChanged}" Visibility="Hidden"/>
                             <DataGridTextColumn Header="ID" Binding="{Binding Id, UpdateSourceTrigger=PropertyChanged}" Visibility="Hidden"/>

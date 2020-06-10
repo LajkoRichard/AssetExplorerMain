@@ -303,11 +303,23 @@ namespace AssetExplorer.ViewModels
 
         private void OnAssetToBeModified()
         {
-            Asset OriginalAsset = new Asset(AssetSelected.DeviceType, AssetSelected.Serial, AssetSelected.MAC, AssetSelected.User, AssetSelected.Knox, AssetSelected.Department, AssetSelected.Location, AssetSelected.IP, AssetSelected.Output, AssetSelected.Input, AssetSelected.Repair, AssetSelected.IsScrapped, true, AssetSelected.IsActive, AssetSelected.LastActiveTime, AssetSelected.IsSelected, AssetSelected.IsModified);
+            bool isBackedUp = false;
 
-            AssetsBeforeModification.Add(OriginalAsset);
+            for (int i = 0; i < AssetsBeforeModification.Count; i++)
+            {
+                if (AssetsBeforeModification[i].Id == AssetSelected.Id)
+                {
+                    isBackedUp = true;
+                }
+            }
+            if (!isBackedUp)
+            {
+                Asset OriginalAsset = new Asset(AssetSelected.DeviceType, AssetSelected.Serial, AssetSelected.MAC, AssetSelected.User, AssetSelected.Knox, AssetSelected.Department, AssetSelected.Location, AssetSelected.IP, AssetSelected.Output, AssetSelected.Input, AssetSelected.Repair, AssetSelected.IsScrapped, true, AssetSelected.IsActive, AssetSelected.LastActiveTime, AssetSelected.IsSelected, AssetSelected.IsModified);
 
-            AssetSelected.IsModified = true;
+                AssetsBeforeModification.Add(OriginalAsset);
+
+                AssetSelected.IsModified = true;
+            }
         }
 
         private void DeleteData()
