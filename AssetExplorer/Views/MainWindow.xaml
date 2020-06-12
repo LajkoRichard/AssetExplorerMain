@@ -131,7 +131,7 @@
                             <DataGridTemplateColumn Header=" Scrapped" Width="80" SortMemberPath="IsScrapped">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                        <CheckBox HorizontalAlignment="Center" VerticalAlignment="Center" IsChecked="{Binding IsScrapped, UpdateSourceTrigger=PropertyChanged}">
+                                        <CheckBox HorizontalAlignment="Center" VerticalAlignment="Center" IsChecked="{Binding IsScrapped, UpdateSourceTrigger=PropertyChanged}" >
                                             <i:Interaction.Triggers>
                                                 <i:EventTrigger EventName="Checked">
                                                     <i:InvokeCommandAction CommandParameter="{Binding Path=SelectedItems, RelativeSource={RelativeSource FindAncestor, AncestorType=jibcontrols:JibGrid}}"
@@ -141,15 +141,12 @@
                                                     <i:InvokeCommandAction CommandParameter="{Binding Path=SelectedItems, RelativeSource={RelativeSource FindAncestor, AncestorType=jibcontrols:JibGrid}}"
                                                                            Command="{Binding DataContext.UnCheckScrappedSelectionCommand, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}" />
                                                 </i:EventTrigger>
-                                                <i:EventTrigger EventName="Click">
-                                                    <i:InvokeCommandAction Command="{Binding DataContext.OnAssetToBeModifiedCommand, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"/>
-                                                </i:EventTrigger>
                                             </i:Interaction.Triggers>
                                         </CheckBox>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
-                            <!--<DataGridCheckBoxColumn Header="Scrapped" Width="50" Binding="{Binding IsScrapped, UpdateSourceTrigger=PropertyChanged}">
+                            <!--<DataGridCheckBoxColumn Header="Scrapped" Width="50" Binding="{Binding IsScrapped, UpdateSourceTrigger=PropertyChanged}" >
                                 <i:Interaction.Triggers>
                                     <i:EventTrigger EventName="CheckBox.Checked">
                                         <i:InvokeCommandAction CommandParameter="{Binding ElementName=dataGridActive, Path=SelectedItems}" Command="{Binding CheckScrappedSelectionCommand}" />

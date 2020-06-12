@@ -10,6 +10,8 @@ using System.Windows;
 using System.Windows.Input;
 using System.Diagnostics;
 using System.Net.NetworkInformation;
+using Microsoft.EntityFrameworkCore.Internal;
+using System.Collections;
 
 namespace AssetExplorer.ViewModels
 {
@@ -303,16 +305,7 @@ namespace AssetExplorer.ViewModels
 
         private void OnAssetToBeModified()
         {
-            bool isBackedUp = false;
-
-            for (int i = 0; i < AssetsBeforeModification.Count; i++)
-            {
-                if (AssetsBeforeModification[i].Id == AssetSelected.Id)
-                {
-                    isBackedUp = true;
-                }
-            }
-            if (!isBackedUp)
+            if (!AssetsBeforeModification.Any(i => i.MAC == AssetSelected.MAC))
             {
                 Asset OriginalAsset = new Asset(AssetSelected.DeviceType, AssetSelected.Serial, AssetSelected.MAC, AssetSelected.User, AssetSelected.Knox, AssetSelected.Department, AssetSelected.Location, AssetSelected.IP, AssetSelected.Output, AssetSelected.Input, AssetSelected.Repair, AssetSelected.IsScrapped, true, AssetSelected.IsActive, AssetSelected.LastActiveTime, AssetSelected.IsSelected, AssetSelected.IsModified);
 
@@ -367,7 +360,7 @@ namespace AssetExplorer.ViewModels
 
         private void CheckSelection(object selectedrows)
         {
-            var collection = (System.Collections.IList)selectedrows;
+            var collection = (IList)selectedrows;
             for (int i = 0; i < collection.Count; i++)
             {
                 (collection[i] as Asset).IsSelected = true;
@@ -376,7 +369,7 @@ namespace AssetExplorer.ViewModels
 
         private void UnCheckSelection(object selectedrows)
         {
-            var collection = (System.Collections.IList)selectedrows;
+            var collection = (IList)selectedrows;
             for (int i = 0; i < collection.Count; i++)
             {
                 (collection[i] as Asset).IsSelected = false;
@@ -385,19 +378,33 @@ namespace AssetExplorer.ViewModels
 
         private void CheckScrappedSelection(object selectedrows)
         {
-            var collection = (System.Collections.IList)selectedrows;
+            var collection = (IList)selectedrows;
             for (int i = 0; i < collection.Count; i++)
             {
+                if (!AssetsBeforeModification.Any(x => x.MAC == (collection[i] as Asset).MAC))
+                {
+                    Asset OriginalAsset = new Asset((collection[i] as Asset).DeviceType, (collection[i] as Asset).Serial, (collection[i] as Asset).MAC, (collection[i] as Asset).User, (collection[i] as Asset).Knox, (collection[i] as Asset).Department, (collection[i] as Asset).Location, (collection[i] as Asset).IP, (collection[i] as Asset).Output, (collection[i] as Asset).Input, (collection[i] as Asset).Repair, (collection[i] as Asset).IsScrapped, true, (collection[i] as Asset).IsActive, (collection[i] as Asset).LastActiveTime, (collection[i] as Asset).IsSelected, (collection[i] as Asset).IsModified);
+
+                    AssetsBeforeModification.Add(OriginalAsset);
+                }
                 (collection[i] as Asset).IsScrapped = true;
+                (collection[i] as Asset).IsModified = true;
             }
         }
 
         private void UnCheckScrappedSelection(object selectedrows)
         {
-            var collection = (System.Collections.IList)selectedrows;
+            var collection = (IList)selectedrows;
             for (int i = 0; i < collection.Count; i++)
             {
+                if (!AssetsBeforeModification.Any(x => x.MAC == (collection[i] as Asset).MAC))
+                {
+                    Asset OriginalAsset = new Asset((collection[i] as Asset).DeviceType, (collection[i] as Asset).Serial, (collection[i] as Asset).MAC, (collection[i] as Asset).User, (collection[i] as Asset).Knox, (collection[i] as Asset).Department, (collection[i] as Asset).Location, (collection[i] as Asset).IP, (collection[i] as Asset).Output, (collection[i] as Asset).Input, (collection[i] as Asset).Repair, (collection[i] as Asset).IsScrapped, true, (collection[i] as Asset).IsActive, (collection[i] as Asset).LastActiveTime, (collection[i] as Asset).IsSelected, (collection[i] as Asset).IsModified);
+
+                    AssetsBeforeModification.Add(OriginalAsset);
+                }
                 (collection[i] as Asset).IsScrapped = false;
+                (collection[i] as Asset).IsModified = true;
             }
         }
 
@@ -442,6 +449,14 @@ namespace AssetExplorer.ViewModels
                     asset.LastActiveTime = DateTime.Now;
                     Context.SaveChanges();
                     NFound++;
+                }
+            }
+            else
+            {
+                lock (LockObject)
+                {
+                    asset.IsActive = false;
+                    Context.SaveChanges();
                 }
             }
         }
