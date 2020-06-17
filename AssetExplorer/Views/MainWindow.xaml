@@ -8,8 +8,10 @@
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:ml="clr-namespace:MoralesLarios.Utilities.Excel;assembly=MoralesLarios.Utilities" 
         xmlns:jibcontrols="clr-namespace:Jib.WPF.Controls.DataGrid;assembly=Jib.WPF.Controls"
+        xmlns:behaviors="clr-namespace:WPFTextBoxAutoComplete;assembly=WPFTextBoxAutoComplete"
         xmlns:viewmodel="clr-namespace:AssetExplorer.ViewModels"
-        xmlns:model="clr-namespace:AssetExplorer.Models"
+        xmlns:model="clr-namespace:AssetExplorer.Models" 
+        xmlns:views="clr-namespace:AssetExplorer.Views"
         mc:Ignorable="d"
         Title="Asset Explorer"
         WindowState="Maximized"
@@ -38,10 +40,14 @@
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <jibcontrols:JibGrid Grid.ColumnSpan="5" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" AutoGenerateColumns="False" CanUserFreeze="True" CanUserSelectDistinct="True" CanUserGroup="True" CanUserFilter="True" x:Name="dataGridActive" Margin="10" ColumnWidth="*" FilteredItemsSource="{Binding ActiveAssets, UpdateSourceTrigger=PropertyChanged}" CanUserAddRows="False" CanUserDeleteRows="False" SelectionMode="Extended" SelectionUnit="FullRow" SelectedItem="{Binding AssetSelected}" controls:DataGridHelper.EnableCellEditAssist="True">
+                    <jibcontrols:JibGrid Grid.ColumnSpan="6" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" AutoGenerateColumns="False" CanUserFreeze="True" CanUserSelectDistinct="True" CanUserGroup="True" CanUserFilter="True" x:Name="dataGridActive" Margin="10" ColumnWidth="*" FilteredItemsSource="{Binding ActiveAssets, UpdateSourceTrigger=PropertyChanged}" CanUserAddRows="False" CanUserDeleteRows="False" SelectionMode="Extended" SelectionUnit="FullRow" SelectedItem="{Binding AssetSelected}" controls:DataGridHelper.EnableCellEditAssist="True" Style="{StaticResource MetroDataGrid}" AlternationCount="2" AlternatingRowBackground="LightGray">
+                        <jibcontrols:JibGrid.Resources>
+                            <views:BindingProxy x:Key="proxy" Data="{Binding}" />
+                        </jibcontrols:JibGrid.Resources>
                         <DataGrid.GroupStyle>
                             <GroupStyle>
                                 <GroupStyle.HeaderTemplate>
@@ -89,10 +95,10 @@
                             </i:EventTrigger>
                         </i:Interaction.Triggers>
                         <jibcontrols:JibGrid.Columns>
-                            <DataGridTemplateColumn Header=" Selected" Width="80" SortMemberPath="IsSelected">
+                            <DataGridTemplateColumn Header=" Selected" Width="Auto" SortMemberPath="IsSelected">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                        <CheckBox HorizontalAlignment="Center" VerticalAlignment="Center" IsChecked="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged}">
+                                        <CheckBox HorizontalAlignment="Center" VerticalAlignment="Center" IsChecked="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource MetroDataGridCheckBox}">
                                             <i:Interaction.Triggers>
                                                 <i:EventTrigger EventName="Checked">
                                                     <i:InvokeCommandAction CommandParameter="{Binding Path=SelectedItems, RelativeSource={RelativeSource FindAncestor, AncestorType=jibcontrols:JibGrid}}"
@@ -117,18 +123,42 @@
                                     </i:EventTrigger>
                                 </i:Interaction.Triggers>
                             </DataGridCheckBoxColumn>-->
+                            
                             <DataGridTextColumn Header=" Device Type" Binding="{Binding DeviceType, UpdateSourceTrigger=PropertyChanged}"/>
                             <DataGridTextColumn Header=" Serial number" Binding="{Binding Serial, UpdateSourceTrigger=PropertyChanged}"/>
                             <DataGridTextColumn Header=" MAC Address" Binding="{Binding MAC, UpdateSourceTrigger=PropertyChanged}"/>
                             <DataGridTextColumn Header=" User" Binding="{Binding User, UpdateSourceTrigger=PropertyChanged}"/>
                             <DataGridTextColumn Header=" Knox ID" Binding="{Binding Knox, UpdateSourceTrigger=PropertyChanged}"/>
-                            <DataGridTextColumn Header=" Department" Binding="{Binding Department, UpdateSourceTrigger=PropertyChanged}"/>
-                            <DataGridTextColumn Header=" Location" Binding="{Binding Location, UpdateSourceTrigger=PropertyChanged}"/>
+                            <DataGridTextColumn Header=" Department" Binding="{Binding Department, UpdateSourceTrigger=PropertyChanged}">
+                                <DataGridTextColumn.CellStyle>
+                                    <Style TargetType="DataGridCell">
+                                        <Setter Property="ToolTip" Value="{Binding Serial}" />
+                                    </Style>
+                                </DataGridTextColumn.CellStyle>
+                            </DataGridTextColumn>
+                            <DataGridTextColumn Header=" Location" Binding="{Binding Location, UpdateSourceTrigger=PropertyChanged}">
+                                <DataGridTextColumn.EditingElementStyle>
+                                    <Style TargetType="{x:Type TextBox}">
+                                        <Setter Property="behaviors:AutoCompleteBehavior.AutoCompleteItemsSource"
+                                    Value="{Binding Data.AvailableLocations, Source={StaticResource proxy}}" />
+                                    </Style>
+                                </DataGridTextColumn.EditingElementStyle>
+                                <!--<DataGridComboBoxColumn.ElementStyle>
+                                    <Style TargetType="ComboBox">
+                                        <Setter Property="ItemsSource" Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.Location}"/>
+                                    </Style>
+                                </DataGridComboBoxColumn.ElementStyle>
+                                <DataGridComboBoxColumn.EditingElementStyle>
+                                    <Style TargetType="ComboBox">
+                                        <Setter Property="ItemsSource" Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.Location}"/>
+                                    </Style>
+                                </DataGridComboBoxColumn.EditingElementStyle>-->
+                            </DataGridTextColumn>
                             <DataGridTextColumn Header=" IP Address" Binding="{Binding IP, UpdateSourceTrigger=LostFocus}"/>
                             <DataGridTextColumn Header=" Output" Binding="{Binding Output, UpdateSourceTrigger=PropertyChanged}"/>
-                            <DataGridTextColumn Header=" Input" Binding="{Binding Input, UpdateSourceTrigger=PropertyChanged}"/>
-                            <DataGridTextColumn Header=" Repair" Binding="{Binding Repair, UpdateSourceTrigger=PropertyChanged}"/>
-                            <DataGridTemplateColumn Header=" Scrapped" Width="80" SortMemberPath="IsScrapped">
+                            <!--<DataGridTextColumn Header=" Input" Binding="{Binding Input, UpdateSourceTrigger=PropertyChanged}" Visibility="Hidden"/>-->
+                            <DataGridTextColumn Header=" Remarks" Binding="{Binding Repair, UpdateSourceTrigger=PropertyChanged}"/>
+                            <!--<DataGridTemplateColumn Header=" Scrapped" Width="80" SortMemberPath="IsScrapped">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <CheckBox HorizontalAlignment="Center" VerticalAlignment="Center" IsChecked="{Binding IsScrapped, UpdateSourceTrigger=PropertyChanged}" >
@@ -145,18 +175,9 @@
                                         </CheckBox>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                            <!--<DataGridCheckBoxColumn Header="Scrapped" Width="50" Binding="{Binding IsScrapped, UpdateSourceTrigger=PropertyChanged}" >
-                                <i:Interaction.Triggers>
-                                    <i:EventTrigger EventName="CheckBox.Checked">
-                                        <i:InvokeCommandAction CommandParameter="{Binding ElementName=dataGridActive, Path=SelectedItems}" Command="{Binding CheckScrappedSelectionCommand}" />
-                                    </i:EventTrigger>
-                                    <i:EventTrigger EventName="CheckBox.Unchecked">
-                                        <i:InvokeCommandAction CommandParameter="{Binding ElementName=dataGridActive, Path=SelectedItems}" Command="{Binding UnCheckScrappedSelectionCommand}" />
-                                    </i:EventTrigger>
-                                </i:Interaction.Triggers>
-                            </DataGridCheckBoxColumn>-->
-                            <DataGridCheckBoxColumn Header=" Active" Width="80" Binding="{Binding IsActive, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True">
+                            </DataGridTemplateColumn>-->
+                            <DataGridCheckBoxColumn Header=" Scrapped" Width="Auto" Binding="{Binding IsScrapped, UpdateSourceTrigger=PropertyChanged}" ElementStyle="{StaticResource MetroDataGridCheckBox}"/>
+                            <DataGridCheckBoxColumn Header=" Active" Width="Auto" Binding="{Binding IsActive, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True">
                                 <DataGridCheckBoxColumn.ElementStyle>
                                     <Style TargetType="{x:Type CheckBox}">
                                         <Setter Property="IsEnabled" Value="False" />
@@ -183,17 +204,18 @@
                             </DataGridCheckBoxColumn>
                             <!--<DataGridCheckBoxColumn Header="Active" Binding="{Binding IsActive, UpdateSourceTrigger=PropertyChanged}"/>-->
                             <DataGridTextColumn Header=" Last Active Time" Binding="{Binding LastActiveTime, UpdateSourceTrigger=PropertyChanged}"/>
-                            <DataGridCheckBoxColumn Header="Archive" Binding="{Binding IsArchive, UpdateSourceTrigger=PropertyChanged}" Visibility="Hidden"/>
-                            <DataGridCheckBoxColumn Header="Modified" Binding="{Binding IsModified, UpdateSourceTrigger=PropertyChanged}" Visibility="Hidden"/>
+                            <!--<DataGridCheckBoxColumn Header="Archive" Binding="{Binding IsArchive, UpdateSourceTrigger=PropertyChanged}" Visibility="Hidden"/>
+                            <DataGridCheckBoxColumn Header="Modified" Binding="{Binding IsModified, UpdateSourceTrigger=PropertyChanged}" Visibility="Hidden"/>-->
                             <DataGridTextColumn Header="ID" Binding="{Binding Id, UpdateSourceTrigger=PropertyChanged}" Visibility="Hidden"/>
                         </jibcontrols:JibGrid.Columns>
                     </jibcontrols:JibGrid>
                     <Button x:Name="SaveButton" Grid.Column="0" Grid.Row="0" Content="Save" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="10" Command="{Binding SaveButtonCommand}"/>
                     <Button x:Name="PingButton" Grid.Column="1" Grid.Row="0" Content="Ping" HorizontalAlignment="Right" Margin="10" VerticalAlignment="Top" Width="75" Command="{Binding PingButtonCommand}"/>
                     <Button x:Name="ReloadButton" Grid.Column="2" Grid.Row="0" Content="Reload" HorizontalAlignment="Right" Margin="10" VerticalAlignment="Top" Width="75" Command="{Binding ReloadDataCommand}"/>
-                    <CheckBox x:Name="SelectAllCheckbox" Grid.Column="3" Grid.Row="0" Content="Select all" HorizontalAlignment="Left" VerticalAlignment="Center" Width="75" Margin="10" CommandParameter="{Binding ElementName=SelectAllCheckbox, Path=IsChecked}" Command="{Binding SelectAllCommand}"/>
-                    <Button x:Name="DeleteButton" Grid.Column="4" Grid.Row="0" Content="Delete" HorizontalAlignment="Right" Margin="10" VerticalAlignment="Top" Width="75" CommandParameter="{Binding ElementName=dataGridActive, Path=SelectedItems}" Command="{Binding DeleteButtonCommand}"/>
-                    <Expander x:Name="expander" Header="Add Assets" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="2" Grid.ColumnSpan="5">
+                    <CheckBox x:Name="SelectAllCheckbox" Grid.Column="3" Grid.Row="0" Content="Select all" HorizontalAlignment="Left" VerticalAlignment="Center" Width="Auto" Margin="10" CommandParameter="{Binding ElementName=SelectAllCheckbox, Path=IsChecked}" Command="{Binding SelectAllCommand}"/>
+                    <CheckBox x:Name="ScrapSelectedCheckbox" Grid.Column="4" Grid.Row="0" Content="Scrap selected" HorizontalAlignment="Left" VerticalAlignment="Center" Width="Auto" Margin="10" CommandParameter="{Binding ElementName=dataGridActive, Path=SelectedItems}" Command="{Binding ScrapSelectedCommand}" IsChecked="{Binding IsScrappedSelected, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+                    <Button x:Name="DeleteButton" Grid.Column="5" Grid.Row="0" Content="Delete" HorizontalAlignment="Right" Margin="10" VerticalAlignment="Top" Width="75" CommandParameter="{Binding ElementName=dataGridActive, Path=SelectedItems}" Command="{Binding DeleteButtonCommand}"/>
+                    <Expander x:Name="expander" Header="Add Assets" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="2" Grid.ColumnSpan="6">
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="Expanded">
                                 <i:InvokeCommandAction Command="{Binding OnExpanderExpandedCommand}"/>

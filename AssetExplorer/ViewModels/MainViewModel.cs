@@ -79,6 +79,18 @@ namespace AssetExplorer.ViewModels
             }
         }
 
+        private ObservableCollection<string> _availableLocations;
+
+        public ObservableCollection<string> AvailableLocations
+        {
+            get => _availableLocations;
+            set
+            {
+                _availableLocations = value;
+                OnPropertyChanged();
+            }
+        }
+
         private Asset _assetSelected;
 
         public Asset AssetSelected
@@ -135,17 +147,17 @@ namespace AssetExplorer.ViewModels
             }
         }
 
-        //private bool _isExpanderExpanded;
+        private bool _isScrappedSelected;
 
-        //public bool IsExpanderExpanded
-        //{
-        //    get => _isExpanderExpanded;
-        //    set
-        //    {
-        //        _isExpanderExpanded = value;
-        //        OnPropertyChanged();
-        //    }
-        //}
+        public bool IsScrappedSelected
+        {
+            get => _isScrappedSelected;
+            set
+            {
+                _isScrappedSelected = value;
+                OnPropertyChanged();
+            }
+        }
 
         #endregion
 
@@ -163,6 +175,7 @@ namespace AssetExplorer.ViewModels
             StopWatch = new Stopwatch();
             NFound = 0;
             RowHeight = new GridLength(1.0, GridUnitType.Auto);
+            AvailableLocations = new ObservableCollection<string>(ActiveAssets.Select(x => x.Location).ToList());
         }
 
         #endregion
@@ -207,6 +220,14 @@ namespace AssetExplorer.ViewModels
                    x =>
                    {
                        SelectAll(x as bool?);
+                   }));
+
+        private ICommand _scrapselectedcommand;
+
+        public ICommand ScrapSelectedCommand => _scrapselectedcommand ?? (_scrapselectedcommand = new RelayCommand.RelayCommand(
+                   x =>
+                   {
+                       ScrapSelected(x as object);
                    }));
 
         private ICommand _checkselectioncommand;
@@ -294,9 +315,9 @@ namespace AssetExplorer.ViewModels
                     Context.Add(AssetsBeforeModification[i]);
                 }
 
-
                 Context.SaveChanges();
                 AssetsBeforeModification.Clear();
+                IsScrappedSelected = false;
                 ActiveAssets = new ObservableCollection<Asset>(Context.Assets.Where(item => item.IsArchive == false).ToList());
                 ArchiveAssets = new ObservableCollection<Asset>(Context.Assets.Where(item => item.IsArchive == true).ToList());
             }
@@ -358,6 +379,15 @@ namespace AssetExplorer.ViewModels
             }
         }
 
+        private void ScrapSelected(object selectedrows)
+        {
+            var collection = (IList)selectedrows;
+            for (int i = 0; i < collection.Count; i++)
+            {
+                (collection[i] as Asset).IsScrapped = IsScrappedSelected;
+            }
+        }
+
         private void CheckSelection(object selectedrows)
         {
             var collection = (IList)selectedrows;
@@ -387,8 +417,13 @@ namespace AssetExplorer.ViewModels
 
                     AssetsBeforeModification.Add(OriginalAsset);
                 }
-                (collection[i] as Asset).IsScrapped = true;
-                (collection[i] as Asset).IsModified = true;
+
+                int scrappedID = ActiveAssets.Where(x => x.Id == (collection[i] as Asset).Id).Select(x => x.Id).FirstOrDefault();
+                ActiveAssets.Where(x => x.Id == scrappedID).FirstOrDefault().IsScrapped = true;
+                ActiveAssets.Where(x => x.Id == scrappedID).FirstOrDefault().IsModified = true;
+
+                //(collection[i] as Asset).IsScrapped = true;
+                //(collection[i] as Asset).IsModified = true;
             }
         }
 
@@ -403,8 +438,13 @@ namespace AssetExplorer.ViewModels
 
                     AssetsBeforeModification.Add(OriginalAsset);
                 }
-                (collection[i] as Asset).IsScrapped = false;
-                (collection[i] as Asset).IsModified = true;
+
+                int scrappedID = ActiveAssets.Where(x => x.Id == (collection[i] as Asset).Id).Select(x => x.Id).FirstOrDefault();
+                ActiveAssets.Where(x => x.Id == scrappedID).FirstOrDefault().IsScrapped = false;
+                ActiveAssets.Where(x => x.Id == scrappedID).FirstOrDefault().IsModified = true;
+
+                //(collection[i] as Asset).IsScrapped = false;
+                //(collection[i] as Asset).IsModified = true;
             }
         }
 
