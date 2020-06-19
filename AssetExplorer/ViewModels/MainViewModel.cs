@@ -246,22 +246,6 @@ namespace AssetExplorer.ViewModels
                        UnCheckSelection(x as object);
                    }));
 
-        private ICommand _checkcrappedselectioncommand;
-
-        public ICommand CheckScrappedSelectionCommand => _checkcrappedselectioncommand ?? (_checkcrappedselectioncommand = new RelayCommand.RelayCommand(
-                   x =>
-                   {
-                       CheckScrappedSelection(x as object);
-                   }));
-
-        private ICommand _uncheckscrappedselectioncommand;
-
-        public ICommand UnCheckScrappedSelectionCommand => _uncheckscrappedselectioncommand ?? (_uncheckscrappedselectioncommand = new RelayCommand.RelayCommand(
-                   x =>
-                   {
-                       UnCheckScrappedSelection(x as object);
-                   }));
-
         private ICommand _reloaddatacommand;
 
         public ICommand ReloadDataCommand => _reloaddatacommand ?? (_reloaddatacommand = new RelayCommand.RelayCommand(
@@ -361,6 +345,14 @@ namespace AssetExplorer.ViewModels
             {
                 for (int i = 0; i < AssetsToBeAdded.Count; i++)
                 {
+                    Asset SavedAsset = ActiveAssets.Where(x => x.Serial == AssetsToBeAdded[i].Serial).FirstOrDefault();
+                    if (SavedAsset != null)
+                    {
+                        SavedAsset.IsArchive = true;
+                        Context.Add(AssetsToBeAdded[i]);
+                        continue;
+                    }
+
                     AssetsToBeAdded[i].IsArchive = false;
                     Context.Add(AssetsToBeAdded[i]);
                 }
@@ -403,48 +395,6 @@ namespace AssetExplorer.ViewModels
             for (int i = 0; i < collection.Count; i++)
             {
                 (collection[i] as Asset).IsSelected = false;
-            }
-        }
-
-        private void CheckScrappedSelection(object selectedrows)
-        {
-            var collection = (IList)selectedrows;
-            for (int i = 0; i < collection.Count; i++)
-            {
-                if (!AssetsBeforeModification.Any(x => x.MAC == (collection[i] as Asset).MAC))
-                {
-                    Asset OriginalAsset = new Asset((collection[i] as Asset).DeviceType, (collection[i] as Asset).Serial, (collection[i] as Asset).MAC, (collection[i] as Asset).User, (collection[i] as Asset).Knox, (collection[i] as Asset).Department, (collection[i] as Asset).Location, (collection[i] as Asset).IP, (collection[i] as Asset).Output, (collection[i] as Asset).Input, (collection[i] as Asset).Repair, (collection[i] as Asset).IsScrapped, true, (collection[i] as Asset).IsActive, (collection[i] as Asset).LastActiveTime, (collection[i] as Asset).IsSelected, (collection[i] as Asset).IsModified);
-
-                    AssetsBeforeModification.Add(OriginalAsset);
-                }
-
-                int scrappedID = ActiveAssets.Where(x => x.Id == (collection[i] as Asset).Id).Select(x => x.Id).FirstOrDefault();
-                ActiveAssets.Where(x => x.Id == scrappedID).FirstOrDefault().IsScrapped = true;
-                ActiveAssets.Where(x => x.Id == scrappedID).FirstOrDefault().IsModified = true;
-
-                //(collection[i] as Asset).IsScrapped = true;
-                //(collection[i] as Asset).IsModified = true;
-            }
-        }
-
-        private void UnCheckScrappedSelection(object selectedrows)
-        {
-            var collection = (IList)selectedrows;
-            for (int i = 0; i < collection.Count; i++)
-            {
-                if (!AssetsBeforeModification.Any(x => x.MAC == (collection[i] as Asset).MAC))
-                {
-                    Asset OriginalAsset = new Asset((collection[i] as Asset).DeviceType, (collection[i] as Asset).Serial, (collection[i] as Asset).MAC, (collection[i] as Asset).User, (collection[i] as Asset).Knox, (collection[i] as Asset).Department, (collection[i] as Asset).Location, (collection[i] as Asset).IP, (collection[i] as Asset).Output, (collection[i] as Asset).Input, (collection[i] as Asset).Repair, (collection[i] as Asset).IsScrapped, true, (collection[i] as Asset).IsActive, (collection[i] as Asset).LastActiveTime, (collection[i] as Asset).IsSelected, (collection[i] as Asset).IsModified);
-
-                    AssetsBeforeModification.Add(OriginalAsset);
-                }
-
-                int scrappedID = ActiveAssets.Where(x => x.Id == (collection[i] as Asset).Id).Select(x => x.Id).FirstOrDefault();
-                ActiveAssets.Where(x => x.Id == scrappedID).FirstOrDefault().IsScrapped = false;
-                ActiveAssets.Where(x => x.Id == scrappedID).FirstOrDefault().IsModified = true;
-
-                //(collection[i] as Asset).IsScrapped = false;
-                //(collection[i] as Asset).IsModified = true;
             }
         }
 

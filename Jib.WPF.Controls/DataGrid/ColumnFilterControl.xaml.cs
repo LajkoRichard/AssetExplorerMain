@@ -15,6 +15,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Windows.Controls.Primitives;
+using System.Windows.Threading;
 
 namespace Jib.WPF.Controls.DataGrid
 {
@@ -296,10 +297,13 @@ namespace Jib.WPF.Controls.DataGrid
 
         private void txtFilter_KeyUp(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Enter)
+            var timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
+            timer.Start();
+            timer.Tick += (s, args) =>
             {
+                timer.Stop();
                 FilterText = ((TextBox)sender).Text;
-            }
+            };
         }
 
         public Predicate<object> GeneratePredicate()
