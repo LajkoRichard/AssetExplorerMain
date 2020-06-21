@@ -44,7 +44,7 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <jibcontrols:JibGrid Grid.ColumnSpan="6" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" AutoGenerateColumns="False" CanUserFreeze="True" CanUserSelectDistinct="True" CanUserGroup="True" CanUserFilter="True" x:Name="dataGridActive" Margin="10" ColumnWidth="*" FilteredItemsSource="{Binding ActiveAssets, UpdateSourceTrigger=PropertyChanged}" CanUserAddRows="False" CanUserDeleteRows="False" SelectionMode="Extended" SelectionUnit="FullRow" SelectedItem="{Binding AssetSelected}" controls:DataGridHelper.EnableCellEditAssist="True" Style="{StaticResource MetroDataGrid}" AlternationCount="2" AlternatingRowBackground="LightSteelBlue">
+                    <jibcontrols:JibGrid Grid.ColumnSpan="6" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" AutoGenerateColumns="False" CanUserFreeze="True" CanUserSelectDistinct="True" CanUserGroup="True" CanUserFilter="True" x:Name="dataGridActive" Margin="10" ColumnWidth="*" FilteredItemsSource="{Binding ActiveAssets, UpdateSourceTrigger=PropertyChanged}" CanUserAddRows="False" CanUserDeleteRows="False" SelectionMode="Extended" SelectionUnit="FullRow" SelectedItem="{Binding AssetSelected}" controls:DataGridHelper.EnableCellEditAssist="True" Style="{StaticResource MetroDataGrid}">
                         <!--<jibcontrols:JibGrid.Resources>
                             <views:BindingProxy x:Key="proxy" Data="{Binding}" />
                         </jibcontrols:JibGrid.Resources>-->
@@ -97,7 +97,7 @@
                             <DataGridTemplateColumn Header=" Selected" Width="Auto" SortMemberPath="IsSelected">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                        <CheckBox HorizontalAlignment="Center" VerticalAlignment="Center" IsChecked="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource MetroDataGridCheckBox}">
+                                        <CheckBox HorizontalAlignment="Center" VerticalAlignment="Center" IsChecked="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged}">
                                             <i:Interaction.Triggers>
                                                 <i:EventTrigger EventName="Checked">
                                                     <i:InvokeCommandAction CommandParameter="{Binding Path=SelectedItems, RelativeSource={RelativeSource FindAncestor, AncestorType=jibcontrols:JibGrid}}"
@@ -118,11 +118,11 @@
                             <DataGridTextColumn Header=" User" Binding="{Binding User, UpdateSourceTrigger=PropertyChanged}"/>
                             <DataGridTextColumn Header=" Knox ID" Binding="{Binding Knox, UpdateSourceTrigger=PropertyChanged}"/>
                             <DataGridTextColumn Header=" Department" Binding="{Binding Department, UpdateSourceTrigger=PropertyChanged}">
-                                <DataGridTextColumn.CellStyle>
+                                <!--<DataGridTextColumn.CellStyle>
                                     <Style TargetType="DataGridCell">
                                         <Setter Property="ToolTip" Value="{Binding Serial}" />
                                     </Style>
-                                </DataGridTextColumn.CellStyle>
+                                </DataGridTextColumn.CellStyle>-->
                             </DataGridTextColumn>
                             <DataGridTextColumn Header=" Location" Binding="{Binding Location, UpdateSourceTrigger=PropertyChanged}">
                                 <!--<DataGridTextColumn.EditingElementStyle>
