@@ -12,12 +12,16 @@ using System.Diagnostics;
 using System.Net.NetworkInformation;
 using Microsoft.EntityFrameworkCore.Internal;
 using System.Collections;
+using NLog;
+using Microsoft.EntityFrameworkCore;
 
 namespace AssetExplorer.ViewModels
 {
     class MainViewModel : INotifyPropertyChanged
     {
         #region Variables
+
+        private static Logger Logger = LogManager.GetCurrentClassLogger();
 
         private AssetContext _context;
 
@@ -87,6 +91,18 @@ namespace AssetExplorer.ViewModels
             set
             {
                 _availableLocations = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private ObservableCollection<string> _availableDepartments;
+
+        public ObservableCollection<string> AvailableDepartments
+        {
+            get => _availableDepartments;
+            set
+            {
+                _availableDepartments = value;
                 OnPropertyChanged();
             }
         }
@@ -176,6 +192,7 @@ namespace AssetExplorer.ViewModels
             NFound = 0;
             RowHeight = new GridLength(1.0, GridUnitType.Auto);
             AvailableLocations = new ObservableCollection<string>(ActiveAssets.Select(x => x.Location).ToList());
+            AvailableDepartments = new ObservableCollection<string>(ActiveAssets.Select(x => x.Department).ToList());
         }
 
         #endregion
@@ -284,82 +301,137 @@ namespace AssetExplorer.ViewModels
 
         private void SaveData()
         {
-            if (MessageBox.Show("Are you sure that you want to save the data", "Alert", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+            try
             {
-                for (int i = 0; i < ActiveAssets.Count; i++)
+                if (MessageBox.Show("Are you sure that you want to save the data", "Alert", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
                 {
-                    if (ActiveAssets[i].IsModified)
+                    for (int i = 0; i < ActiveAssets.Count; i++)
                     {
-                        Context.Update(ActiveAssets[i]);
+                        if (ActiveAssets[i].IsModified)
+                        {
+                            Context.Update(ActiveAssets[i]);
+                            //Logger.Info()
+                        }
                     }
-                }
 
-                for (int i = 0; i < AssetsBeforeModification.Count; i++)
-                {
-                    Context.Add(AssetsBeforeModification[i]);
-                }
+                    for (int i = 0; i < AssetsBeforeModification.Count; i++)
+                    {
+                        Context.Add(AssetsBeforeModification[i]);
+                    }
 
-                Context.SaveChanges();
-                AssetsBeforeModification.Clear();
-                IsScrappedSelected = false;
-                ActiveAssets = new ObservableCollection<Asset>(Context.Assets.Where(item => item.IsArchive == false).ToList());
-                ArchiveAssets = new ObservableCollection<Asset>(Context.Assets.Where(item => item.IsArchive == true).ToList());
+                    Context.SaveChanges();
+                    AssetsBeforeModification.Clear();
+                    IsScrappedSelected = false;
+                    ActiveAssets = new ObservableCollection<Asset>(Context.Assets.Where(item => item.IsArchive == false).ToList());
+                    ArchiveAssets = new ObservableCollection<Asset>(Context.Assets.Where(item => item.IsArchive == true).ToList());
+                }
             }
-            
+            catch (NullReferenceException ex)
+            {
+                Logger.Error(ex.Message);
+            }
+            catch (DbUpdateException ex)
+            {
+                Logger.Error(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex.Message);
+            }
         }
 
         private void OnAssetToBeModified()
         {
-            if (!AssetsBeforeModification.Any(i => i.MAC == AssetSelected.MAC))
+            try
             {
-                Asset OriginalAsset = new Asset(AssetSelected.DeviceType, AssetSelected.Serial, AssetSelected.MAC, AssetSelected.User, AssetSelected.Knox, AssetSelected.Department, AssetSelected.Location, AssetSelected.IP, AssetSelected.Output, AssetSelected.Input, AssetSelected.Repair, AssetSelected.IsScrapped, true, AssetSelected.IsActive, AssetSelected.LastActiveTime, AssetSelected.IsSelected, AssetSelected.IsModified);
+                if (!AssetsBeforeModification.Any(i => i.MAC == AssetSelected.MAC))
+                {
+                    Asset OriginalAsset = new Asset(AssetSelected.DeviceType, AssetSelected.Serial, AssetSelected.MAC, AssetSelected.User, AssetSelected.Knox, AssetSelected.Department, AssetSelected.Location, AssetSelected.IP, AssetSelected.Output, AssetSelected.Input, AssetSelected.Repair, AssetSelected.IsScrapped, true, AssetSelected.IsActive, AssetSelected.LastActiveTime, AssetSelected.IsSelected, AssetSelected.IsModified);
 
-                AssetsBeforeModification.Add(OriginalAsset);
+                    AssetsBeforeModification.Add(OriginalAsset);
 
-                AssetSelected.IsModified = true;
+                    AssetSelected.IsModified = true;
+                }
+            }
+            catch (NullReferenceException ex)
+            {
+                Logger.Error(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex.Message);
             }
         }
 
         private void DeleteData()
         {
-            if (MessageBox.Show("Are you sure that want to delete the selected data?", "Alert", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+            try
             {
-                for (int i = 0; i < ActiveAssets.Count; i++)
+                if (MessageBox.Show("Are you sure that want to delete the selected data?", "Alert", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
                 {
-                    if (ActiveAssets[i].IsSelected)
+                    for (int i = 0; i < ActiveAssets.Count; i++)
                     {
-                        ActiveAssets[i].IsArchive = true;
+                        if (ActiveAssets[i].IsSelected)
+                        {
+                            ActiveAssets[i].IsArchive = true;
+                        }
                     }
-                }
 
-                Context.SaveChanges();
-                ActiveAssets = new ObservableCollection<Asset>(Context.Assets.Where(item => item.IsArchive == false).ToList());
-                ArchiveAssets = new ObservableCollection<Asset>(Context.Assets.Where(item => item.IsArchive == true).ToList());
+                    Context.SaveChanges();
+                    ActiveAssets = new ObservableCollection<Asset>(Context.Assets.Where(item => item.IsArchive == false).ToList());
+                    ArchiveAssets = new ObservableCollection<Asset>(Context.Assets.Where(item => item.IsArchive == true).ToList());
+                }
             }
-            
+            catch (NullReferenceException ex)
+            {
+                Logger.Error(ex.Message);
+            }
+            catch (DbUpdateException ex)
+            {
+                Logger.Error(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex.Message);
+            }
         }
 
         private void AddData()
         {
-            if (MessageBox.Show("Are you sure that want to add the data?", "Alert", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+            try
             {
-                for (int i = 0; i < AssetsToBeAdded.Count; i++)
+                if (MessageBox.Show("Are you sure that want to add the data?", "Alert", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
                 {
-                    Asset SavedAsset = ActiveAssets.Where(x => x.Serial == AssetsToBeAdded[i].Serial).FirstOrDefault();
-                    if (SavedAsset != null)
+                    for (int i = 0; i < AssetsToBeAdded.Count; i++)
                     {
-                        SavedAsset.IsArchive = true;
+                        Asset SavedAsset = ActiveAssets.Where(x => x.Serial == AssetsToBeAdded[i].Serial).FirstOrDefault();
+                        if (SavedAsset != null)
+                        {
+                            SavedAsset.IsArchive = true;
+                            Context.Add(AssetsToBeAdded[i]);
+                            continue;
+                        }
+
+                        AssetsToBeAdded[i].IsArchive = false;
                         Context.Add(AssetsToBeAdded[i]);
-                        continue;
                     }
 
-                    AssetsToBeAdded[i].IsArchive = false;
-                    Context.Add(AssetsToBeAdded[i]);
+                    Context.SaveChanges();
+                    AssetsToBeAdded.Clear();
+                    ActiveAssets = new ObservableCollection<Asset>(Context.Assets.Where(item => item.IsArchive == false).ToList());
                 }
-
-                Context.SaveChanges();
-                AssetsToBeAdded.Clear();
-                ActiveAssets = new ObservableCollection<Asset>(Context.Assets.Where(item => item.IsArchive == false).ToList());
+            }
+            catch (NullReferenceException ex)
+            {
+                Logger.Error(ex.Message);
+            }
+            catch (DbUpdateException ex)
+            {
+                Logger.Error(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex.Message);
             }
         }
 

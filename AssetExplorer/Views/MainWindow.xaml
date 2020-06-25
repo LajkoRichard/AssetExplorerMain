@@ -43,6 +43,9 @@
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
+                    <Grid.Resources>
+                        <views:BindingProxy x:Key="proxy" Data="{Binding}" />
+                    </Grid.Resources>
 
                     <jibcontrols:JibGrid Grid.ColumnSpan="6" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" AutoGenerateColumns="False" CanUserFreeze="True" CanUserSelectDistinct="True" CanUserGroup="True" CanUserFilter="True" x:Name="dataGridActive" Margin="10" ColumnWidth="*" FilteredItemsSource="{Binding ActiveAssets, UpdateSourceTrigger=PropertyChanged}" CanUserAddRows="False" CanUserDeleteRows="False" SelectionMode="Extended" SelectionUnit="FullRow" SelectedItem="{Binding AssetSelected}" controls:DataGridHelper.EnableCellEditAssist="True" Style="{StaticResource MetroDataGrid}">
                         <!--<jibcontrols:JibGrid.Resources>
@@ -118,19 +121,20 @@
                             <DataGridTextColumn Header=" User" Binding="{Binding User, UpdateSourceTrigger=PropertyChanged}"/>
                             <DataGridTextColumn Header=" Knox ID" Binding="{Binding Knox, UpdateSourceTrigger=PropertyChanged}"/>
                             <DataGridTextColumn Header=" Department" Binding="{Binding Department, UpdateSourceTrigger=PropertyChanged}">
-                                <!--<DataGridTextColumn.CellStyle>
-                                    <Style TargetType="DataGridCell">
-                                        <Setter Property="ToolTip" Value="{Binding Serial}" />
+                                <DataGridTextColumn.EditingElementStyle>
+                                    <Style TargetType="{x:Type TextBox}">
+                                        <Setter Property="behaviors:AutoCompleteBehavior.AutoCompleteItemsSource"
+                                    Value="{Binding Data.AvailableDepartments, Source={StaticResource proxy}}" />
                                     </Style>
-                                </DataGridTextColumn.CellStyle>-->
+                                </DataGridTextColumn.EditingElementStyle>
                             </DataGridTextColumn>
                             <DataGridTextColumn Header=" Location" Binding="{Binding Location, UpdateSourceTrigger=PropertyChanged}">
-                                <!--<DataGridTextColumn.EditingElementStyle>
+                                <DataGridTextColumn.EditingElementStyle>
                                     <Style TargetType="{x:Type TextBox}">
                                         <Setter Property="behaviors:AutoCompleteBehavior.AutoCompleteItemsSource"
                                     Value="{Binding Data.AvailableLocations, Source={StaticResource proxy}}" />
                                     </Style>
-                                </DataGridTextColumn.EditingElementStyle>-->
+                                </DataGridTextColumn.EditingElementStyle>
                                 <!--<DataGridComboBoxColumn.ElementStyle>
                                     <Style TargetType="ComboBox">
                                         <Setter Property="ItemsSource" Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.Location}"/>
@@ -214,7 +218,14 @@
                                     <DataGridTextColumn Header="MAC Address" Binding="{Binding MAC, UpdateSourceTrigger=PropertyChanged}"/>
                                     <DataGridTextColumn Header="User" Binding="{Binding User, UpdateSourceTrigger=PropertyChanged}"/>
                                     <DataGridTextColumn Header="Knox ID" Binding="{Binding Knox, UpdateSourceTrigger=PropertyChanged}"/>
-                                    <DataGridTextColumn Header="Department" Binding="{Binding Department, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <DataGridTextColumn Header="Department" Binding="{Binding Department, UpdateSourceTrigger=PropertyChanged}">
+                                        <DataGridTextColumn.EditingElementStyle>
+                                            <Style TargetType="{x:Type TextBox}">
+                                                <Setter Property="behaviors:AutoCompleteBehavior.AutoCompleteItemsSource"
+                                                        Value="{Binding Data.AvailableDepartments, Source={StaticResource proxy}}" />
+                                            </Style>
+                                        </DataGridTextColumn.EditingElementStyle>
+                                    </DataGridTextColumn>
                                     <DataGridTextColumn Header="Location" Binding="{Binding Location, UpdateSourceTrigger=PropertyChanged}">
                                         <DataGridTextColumn.EditingElementStyle>
                                             <Style TargetType="{x:Type TextBox}">
