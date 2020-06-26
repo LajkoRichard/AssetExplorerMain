@@ -310,7 +310,7 @@ namespace AssetExplorer.ViewModels
                         if (ActiveAssets[i].IsModified)
                         {
                             Context.Update(ActiveAssets[i]);
-                            //Logger.Info()
+                            Logger.Info("Asset successfully updated: {0}", ActiveAssets[i].Serial);
                         }
                     }
 
@@ -374,6 +374,7 @@ namespace AssetExplorer.ViewModels
                         if (ActiveAssets[i].IsSelected)
                         {
                             ActiveAssets[i].IsArchive = true;
+                            Logger.Info("Asset successfully archived: {0}", ActiveAssets[i].Serial);
                         }
                     }
 
@@ -409,11 +410,13 @@ namespace AssetExplorer.ViewModels
                         {
                             SavedAsset.IsArchive = true;
                             Context.Add(AssetsToBeAdded[i]);
+                            Logger.Info("Asset successfully added: {0}", AssetsToBeAdded[i].Serial);
                             continue;
                         }
 
                         AssetsToBeAdded[i].IsArchive = false;
                         Context.Add(AssetsToBeAdded[i]);
+                        Logger.Info("Asset successfully added: {0}", AssetsToBeAdded[i].Serial);
                     }
 
                     Context.SaveChanges();
@@ -478,48 +481,79 @@ namespace AssetExplorer.ViewModels
 
         private async void Ping()
         {
-            NFound = 0;
-
-            var tasks = new List<Task>();
-
-            StopWatch.Start();
-
-            for (int i = 0; i < ActiveAssets.Count; i++)
+            try
             {
-                Ping p = new Ping();
-                var task = PingAndUpdateAsync(p, ActiveAssets[i]);
-                tasks.Add(task);
+                NFound = 0;
+
+                var tasks = new List<Task>();
+
+                StopWatch.Start();
+
+                for (int i = 0; i < ActiveAssets.Count; i++)
+                {
+                    Ping p = new Ping();
+                    var task = PingAndUpdateAsync(p, ActiveAssets[i]);
+                    tasks.Add(task);
+                }
+
+                await Task.WhenAll(tasks).ContinueWith(t =>
+                {
+                    StopWatch.Stop();
+                    TimeSpan = StopWatch.Elapsed;
+                    Logger.Info("Assets successfully pinged!");
+                    MessageBox.Show(NFound.ToString() + " devices found! Elapsed time: " + TimeSpan.ToString(), "Asynchronous");
+                });
             }
-
-            await Task.WhenAll(tasks).ContinueWith(t =>
+            catch (NullReferenceException ex)
             {
-                StopWatch.Stop();
-                TimeSpan = StopWatch.Elapsed;
-                MessageBox.Show(NFound.ToString() + " devices found! Elapsed time: " + TimeSpan.ToString(), "Asynchronous");
-            });
+                Logger.Error(ex.Message);
+            }
+            catch (DbUpdateException ex)
+            {
+                Logger.Error(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex.Message);
+            }
         }
 
         private async Task PingAndUpdateAsync(Ping ping, Asset asset)
         {
-            var reply = await ping.SendPingAsync(asset.IP, 100);
-
-            if (reply.Status == IPStatus.Success)
+            try
             {
-                lock (LockObject)
+                var reply = await ping.SendPingAsync(asset.IP, 100);
+
+                if (reply.Status == IPStatus.Success)
                 {
-                    asset.IsActive = true;
-                    asset.LastActiveTime = DateTime.Now;
-                    Context.SaveChanges();
-                    NFound++;
+                    lock (LockObject)
+                    {
+                        asset.IsActive = true;
+                        asset.LastActiveTime = DateTime.Now;
+                        Context.SaveChanges();
+                        NFound++;
+                    }
+                }
+                else
+                {
+                    lock (LockObject)
+                    {
+                        asset.IsActive = false;
+                        Context.SaveChanges();
+                    }
                 }
             }
-            else
+            catch (NullReferenceException ex)
             {
-                lock (LockObject)
-                {
-                    asset.IsActive = false;
-                    Context.SaveChanges();
-                }
+                Logger.Error(ex.Message);
+            }
+            catch (DbUpdateException ex)
+            {
+                Logger.Error(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex.Message);
             }
         }
 
