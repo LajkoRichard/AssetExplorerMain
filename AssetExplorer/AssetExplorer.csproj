@@ -288,6 +288,9 @@
   <ItemGroup>
     <Resource Include="Images\Icon1.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\orangecircle.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

@@ -193,6 +193,7 @@ namespace AssetExplorer.ViewModels
             RowHeight = new GridLength(1.0, GridUnitType.Auto);
             AvailableLocations = new ObservableCollection<string>(ActiveAssets.Select(x => x.Location).ToList());
             AvailableDepartments = new ObservableCollection<string>(ActiveAssets.Select(x => x.Department).ToList());
+            
         }
 
         #endregion
@@ -295,31 +296,38 @@ namespace AssetExplorer.ViewModels
                        OnExpanderCollapsed();
                    }));
 
+        private ICommand _checkactivedatecommand;
+
+        public ICommand CheckActiveDateCommand => _checkactivedatecommand ?? (_checkactivedatecommand = new RelayCommand.RelayCommand(
+                   x =>
+                   {
+                       CheckActiveDate();
+                   }));
+
         #endregion
 
         #region Functions
 
-        private void SaveData()
+        private async void SaveData()
         {
             try
             {
                 if (MessageBox.Show("Are you sure that you want to save the data", "Alert", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
                 {
-                    for (int i = 0; i < ActiveAssets.Count; i++)
+                    for (int i = 0; i < AssetsBeforeModification.Count; i++)
                     {
-                        if (ActiveAssets[i].IsModified)
+                        await Context.AddAsync(AssetsBeforeModification[i]);
+                    }
+                    foreach (var asset in ActiveAssets)
+                    {
+                        if (asset.IsModified)
                         {
-                            Context.Update(ActiveAssets[i]);
-                            Logger.Info("Asset successfully updated: {0}", ActiveAssets[i].Serial);
+                            Logger.Info("Asset successfully updated: {0}", asset.Serial);
                         }
                     }
 
-                    for (int i = 0; i < AssetsBeforeModification.Count; i++)
-                    {
-                        Context.Add(AssetsBeforeModification[i]);
-                    }
-
-                    Context.SaveChanges();
+                    await Context.SaveChangesAsync();
+                    
                     AssetsBeforeModification.Clear();
                     IsScrappedSelected = false;
                     ActiveAssets = new ObservableCollection<Asset>(Context.Assets.Where(item => item.IsArchive == false).ToList());
@@ -363,7 +371,7 @@ namespace AssetExplorer.ViewModels
             }
         }
 
-        private void DeleteData()
+        private async void DeleteData()
         {
             try
             {
@@ -378,7 +386,7 @@ namespace AssetExplorer.ViewModels
                         }
                     }
 
-                    Context.SaveChanges();
+                    await Context.SaveChangesAsync();
                     ActiveAssets = new ObservableCollection<Asset>(Context.Assets.Where(item => item.IsArchive == false).ToList());
                     ArchiveAssets = new ObservableCollection<Asset>(Context.Assets.Where(item => item.IsArchive == true).ToList());
                 }
@@ -397,7 +405,7 @@ namespace AssetExplorer.ViewModels
             }
         }
 
-        private void AddData()
+        private async void AddData()
         {
             try
             {
@@ -409,17 +417,17 @@ namespace AssetExplorer.ViewModels
                         if (SavedAsset != null)
                         {
                             SavedAsset.IsArchive = true;
-                            Context.Add(AssetsToBeAdded[i]);
+                            await Context.AddAsync(AssetsToBeAdded[i]);
                             Logger.Info("Asset successfully added: {0}", AssetsToBeAdded[i].Serial);
                             continue;
                         }
 
                         AssetsToBeAdded[i].IsArchive = false;
-                        Context.Add(AssetsToBeAdded[i]);
+                        await Context.AddAsync(AssetsToBeAdded[i]);
                         Logger.Info("Asset successfully added: {0}", AssetsToBeAdded[i].Serial);
                     }
 
-                    Context.SaveChanges();
+                    await Context.SaveChangesAsync();
                     AssetsToBeAdded.Clear();
                     ActiveAssets = new ObservableCollection<Asset>(Context.Assets.Where(item => item.IsArchive == false).ToList());
                 }
@@ -565,6 +573,17 @@ namespace AssetExplorer.ViewModels
         private void OnExpanderCollapsed()
         {
             RowHeight = new GridLength(1.0, GridUnitType.Auto);
+        }
+
+        private void CheckActiveDate()
+        {
+            for (int i = 0; i < ActiveAssets.Count; i++)
+            {
+                if ((DateTime.Now - ActiveAssets[i].LastActiveTime).TotalDays < 30)
+                {
+                    ActiveAssets[i].IsNotActiveLessThan1Month = true;
+                }
+            }
         }
 
         #endregion

@@ -244,6 +244,19 @@ namespace AssetExplorer.Models
             }
         }
 
+        [NotMapped]
+        private bool _isNotActiveLessThan1Month;
+        [NotMapped]
+        public bool IsNotActiveLessThan1Month
+        {
+            get => _isNotActiveLessThan1Month;
+            set
+            {
+                _isNotActiveLessThan1Month = value;
+                OnPropertyChanged();
+            }
+        }
+
         public int Id { get; set; }
 
         #endregion

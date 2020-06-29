@@ -95,6 +95,9 @@
                             <i:EventTrigger EventName="PreparingCellForEdit">
                                 <i:InvokeCommandAction Command="{Binding OnAssetToBeModifiedCommand}"/>
                             </i:EventTrigger>
+                            <i:EventTrigger EventName="LoadingRow">
+                                <i:InvokeCommandAction Command="{Binding DataContext.CheckActiveDateCommand, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}" />
+                            </i:EventTrigger>
                         </i:Interaction.Triggers>
                         <jibcontrols:JibGrid.Columns>
                             <DataGridTemplateColumn Header=" Selected" Width="Auto" SortMemberPath="IsSelected">
@@ -166,6 +169,9 @@
                                                                     <DataTrigger Binding="{Binding IsChecked, RelativeSource={RelativeSource AncestorType=CheckBox}}" Value="True">
                                                                         <Setter Property="Source" Value="../Images/greencircle.png" />
                                                                     </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding IsNotActiveLessThan1Month, UpdateSourceTrigger=PropertyChanged}" Value="True">
+                                                                        <Setter Property="Source" Value="../Images/orangecircle.png" />
+                                                                    </DataTrigger>
                                                                 </Style.Triggers>
                                                             </Style>
                                                         </Image.Style>
@@ -236,9 +242,9 @@
                                     </DataGridTextColumn>
                                     <DataGridTextColumn Header="IP Address" Binding="{Binding IP, UpdateSourceTrigger=LostFocus}"/>
                                     <DataGridTextColumn Header="Output" Binding="{Binding Output, UpdateSourceTrigger=PropertyChanged}"/>
-                                    <DataGridTextColumn Header="Input" Binding="{Binding Input, UpdateSourceTrigger=PropertyChanged}"/>
-                                    <DataGridTextColumn Header="Repair" Binding="{Binding Repair, UpdateSourceTrigger=PropertyChanged}"/>
-                                    <DataGridCheckBoxColumn Header="Scrapped" Binding="{Binding IsScrapped, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <!--<DataGridTextColumn Header="Input" Binding="{Binding Input, UpdateSourceTrigger=PropertyChanged}"/>-->
+                                    <DataGridTextColumn Header="Remarks" Binding="{Binding Repair, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <DataGridCheckBoxColumn Header="Scrapped" Binding="{Binding IsScrapped, UpdateSourceTrigger=PropertyChanged}" ElementStyle="{StaticResource MetroDataGridCheckBox}"/>
                                     <DataGridCheckBoxColumn Header="IsArchive" Binding="{Binding IsArchive, UpdateSourceTrigger=PropertyChanged}" Visibility="Hidden"/>
                                     <DataGridCheckBoxColumn Header="IsModified" Binding="{Binding IsModified, UpdateSourceTrigger=PropertyChanged}" Visibility="Hidden"/>
                                     <DataGridCheckBoxColumn Header="IsActive" Binding="{Binding IsActive, UpdateSourceTrigger=PropertyChanged}" Visibility="Hidden"/>
@@ -261,7 +267,7 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <jibcontrols:JibGrid Grid.ColumnSpan="2" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" AutoGenerateColumns="False"   CanUserFreeze="True" CanUserSelectDistinct="True" CanUserGroup="False" CanUserFilter="True" Name="dataGridArchive" Margin="10" ColumnWidth="*" FilteredItemsSource="{Binding ArchiveAssets}" CanUserAddRows="False" controls:DataGridHelper.EnableCellEditAssist="True">
+                    <jibcontrols:JibGrid Grid.ColumnSpan="2" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" AutoGenerateColumns="False"   CanUserFreeze="True" CanUserSelectDistinct="True" CanUserGroup="True" CanUserFilter="True" Name="dataGridArchive" Margin="10" ColumnWidth="*" FilteredItemsSource="{Binding ArchiveAssets}" CanUserAddRows="False" controls:DataGridHelper.EnableCellEditAssist="True" Style="{StaticResource MetroDataGrid}">
                         <DataGrid.GroupStyle>
                             <GroupStyle>
                                 <GroupStyle.HeaderTemplate>
@@ -307,7 +313,7 @@
                             <DataGridTextColumn Header="Output" Binding="{Binding Output, UpdateSourceTrigger=PropertyChanged}"/>
                             <DataGridTextColumn Header="Input" Binding="{Binding Input, UpdateSourceTrigger=PropertyChanged}"/>
                             <DataGridTextColumn Header="Repair" Binding="{Binding Repair, UpdateSourceTrigger=PropertyChanged}"/>
-                            <DataGridCheckBoxColumn Header="Scrapped" Binding="{Binding IsScrapped, UpdateSourceTrigger=PropertyChanged}"/>
+                            <DataGridCheckBoxColumn Header="Scrapped" Binding="{Binding IsScrapped, UpdateSourceTrigger=PropertyChanged}" ElementStyle="{StaticResource MetroDataGridCheckBox}"/>
                             <DataGridCheckBoxColumn Header="IsArchive" Binding="{Binding IsArchive, UpdateSourceTrigger=PropertyChanged}" Visibility="Hidden"/>
                             <DataGridCheckBoxColumn Header="IsModified" Binding="{Binding IsModified, UpdateSourceTrigger=PropertyChanged}" Visibility="Hidden"/>
                             <DataGridCheckBoxColumn Header="IsActive" Binding="{Binding IsActive, UpdateSourceTrigger=PropertyChanged}" Visibility="Hidden"/>
