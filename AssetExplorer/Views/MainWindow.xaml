@@ -47,7 +47,8 @@
                         <views:BindingProxy x:Key="proxy" Data="{Binding}" />
                     </Grid.Resources>
 
-                    <jibcontrols:JibGrid Grid.ColumnSpan="6" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" AutoGenerateColumns="False" CanUserFreeze="True" CanUserSelectDistinct="True" CanUserGroup="True" CanUserFilter="True" x:Name="dataGridActive" Margin="10" ColumnWidth="*" FilteredItemsSource="{Binding ActiveAssets, UpdateSourceTrigger=PropertyChanged}" CanUserAddRows="False" CanUserDeleteRows="False" SelectionMode="Extended" SelectionUnit="FullRow" SelectedItem="{Binding AssetSelected}" controls:DataGridHelper.EnableCellEditAssist="True" Style="{StaticResource MetroDataGrid}">
+                    <!--<StackPanel Grid.ColumnSpan="6" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">-->
+                    <jibcontrols:JibGrid Grid.ColumnSpan="6" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" AutoGenerateColumns="False" CanUserFreeze="True" CanUserSelectDistinct="True" CanUserGroup="True" CanUserFilter="True" x:Name="dataGridActive" Margin="10" ColumnWidth="*" FilteredItemsSource="{Binding ActiveAssets, UpdateSourceTrigger=PropertyChanged}" CanUserAddRows="False" CanUserDeleteRows="False" SelectionMode="Extended" SelectionUnit="FullRow" SelectedItem="{Binding AssetSelected, UpdateSourceTrigger=PropertyChanged, IsAsync=True}" controls:DataGridHelper.EnableCellEditAssist="True" Style="{StaticResource MetroDataGrid}" EnableColumnVirtualization="True" EnableRowVirtualization="True" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling" ScrollViewer.IsDeferredScrollingEnabled="True">
                         <!--<jibcontrols:JibGrid.Resources>
                             <views:BindingProxy x:Key="proxy" Data="{Binding}" />
                         </jibcontrols:JibGrid.Resources>-->
@@ -56,7 +57,7 @@
                                 <GroupStyle.HeaderTemplate>
                                     <DataTemplate>
                                         <StackPanel>
-                                            <TextBlock Text="{Binding Path=Name}"/>
+                                            <TextBlock Text="{Binding Path=Name, IsAsync=True}"/>
                                         </StackPanel>
                                     </DataTemplate>
                                 </GroupStyle.HeaderTemplate>
@@ -68,9 +69,9 @@
                                                     <Expander>
                                                         <Expander.Header>
                                                             <StackPanel Orientation="Horizontal">
-                                                                <TextBlock Text="{Binding Path=Name}" Foreground="White"/>
+                                                                <TextBlock Text="{Binding Path=Name, IsAsync=True}" Foreground="White"/>
                                                                 <TextBlock Text="NUMBER OF ITEMS:" Foreground="White" Margin="10,0,10,0"/>
-                                                                <TextBlock Text="{Binding Path=ItemCount}" Foreground="White"/>
+                                                                <TextBlock Text="{Binding Path=ItemCount, IsAsync=True}" Foreground="White"/>
                                                             </StackPanel>
                                                         </Expander.Header>
                                                         <ItemsPresenter />
@@ -93,49 +94,49 @@
                         </DataGrid.CellStyle>-->
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="PreparingCellForEdit">
-                                <i:InvokeCommandAction Command="{Binding OnAssetToBeModifiedCommand}"/>
+                                <i:InvokeCommandAction Command="{Binding OnAssetToBeModifiedCommand, IsAsync=True}"/>
                             </i:EventTrigger>
                             <i:EventTrigger EventName="LoadingRow">
-                                <i:InvokeCommandAction Command="{Binding DataContext.CheckActiveDateCommand, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}" />
+                                <i:InvokeCommandAction Command="{Binding DataContext.CheckActiveDateCommand, IsAsync=True, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}" />
                             </i:EventTrigger>
                         </i:Interaction.Triggers>
                         <jibcontrols:JibGrid.Columns>
                             <DataGridTemplateColumn Header=" Selected" Width="Auto" SortMemberPath="IsSelected">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                        <CheckBox HorizontalAlignment="Center" VerticalAlignment="Center" IsChecked="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged}">
+                                        <CheckBox HorizontalAlignment="Center" VerticalAlignment="Center" IsChecked="{Binding IsSelected, IsAsync=True, UpdateSourceTrigger=PropertyChanged}">
                                             <i:Interaction.Triggers>
                                                 <i:EventTrigger EventName="Checked">
-                                                    <i:InvokeCommandAction CommandParameter="{Binding Path=SelectedItems, RelativeSource={RelativeSource FindAncestor, AncestorType=jibcontrols:JibGrid}}"
-                                                                           Command="{Binding DataContext.CheckSelectionCommand, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}" />
+                                                    <i:InvokeCommandAction CommandParameter="{Binding Path=SelectedItems, IsAsync=True, RelativeSource={RelativeSource FindAncestor, AncestorType=jibcontrols:JibGrid}}"
+                                                                           Command="{Binding DataContext.CheckSelectionCommand, IsAsync=True, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}" />
                                                 </i:EventTrigger>
                                                 <i:EventTrigger EventName="Unchecked">
-                                                    <i:InvokeCommandAction CommandParameter="{Binding Path=SelectedItems, RelativeSource={RelativeSource FindAncestor, AncestorType=jibcontrols:JibGrid}}"
-                                                                           Command="{Binding DataContext.UnCheckSelectionCommand, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}" />
+                                                    <i:InvokeCommandAction CommandParameter="{Binding Path=SelectedItems, IsAsync=True, RelativeSource={RelativeSource FindAncestor, AncestorType=jibcontrols:JibGrid}}"
+                                                                           Command="{Binding DataContext.UnCheckSelectionCommand, IsAsync=True, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}" />
                                                 </i:EventTrigger>
                                             </i:Interaction.Triggers>
                                         </CheckBox>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
-                            <DataGridTextColumn Header=" Device Type" Binding="{Binding DeviceType, UpdateSourceTrigger=PropertyChanged}"/>
-                            <DataGridTextColumn Header=" Serial number" Binding="{Binding Serial, UpdateSourceTrigger=PropertyChanged}"/>
-                            <DataGridTextColumn Header=" MAC Address" Binding="{Binding MAC, UpdateSourceTrigger=PropertyChanged}"/>
-                            <DataGridTextColumn Header=" User" Binding="{Binding User, UpdateSourceTrigger=PropertyChanged}"/>
-                            <DataGridTextColumn Header=" Knox ID" Binding="{Binding Knox, UpdateSourceTrigger=PropertyChanged}"/>
-                            <DataGridTextColumn Header=" Department" Binding="{Binding Department, UpdateSourceTrigger=PropertyChanged}">
+                            <DataGridTextColumn Header=" Device Type" Binding="{Binding DeviceType, UpdateSourceTrigger=PropertyChanged, IsAsync=True}"/>
+                            <DataGridTextColumn Header=" Serial number" Binding="{Binding Serial, UpdateSourceTrigger=PropertyChanged, IsAsync=True}"/>
+                            <DataGridTextColumn Header=" MAC Address" Binding="{Binding MAC, UpdateSourceTrigger=PropertyChanged, IsAsync=True}"/>
+                            <DataGridTextColumn Header=" User" Binding="{Binding User, UpdateSourceTrigger=PropertyChanged, IsAsync=True}"/>
+                            <DataGridTextColumn Header=" Knox ID" Binding="{Binding Knox, UpdateSourceTrigger=PropertyChanged, IsAsync=True}"/>
+                            <DataGridTextColumn Header=" Department" Binding="{Binding Department, UpdateSourceTrigger=PropertyChanged, IsAsync=True}">
                                 <DataGridTextColumn.EditingElementStyle>
                                     <Style TargetType="{x:Type TextBox}">
                                         <Setter Property="behaviors:AutoCompleteBehavior.AutoCompleteItemsSource"
-                                    Value="{Binding Data.AvailableDepartments, Source={StaticResource proxy}}" />
+                                    Value="{Binding Data.AvailableDepartments, IsAsync=True, Source={StaticResource proxy}}" />
                                     </Style>
                                 </DataGridTextColumn.EditingElementStyle>
                             </DataGridTextColumn>
-                            <DataGridTextColumn Header=" Location" Binding="{Binding Location, UpdateSourceTrigger=PropertyChanged}">
+                            <DataGridTextColumn Header=" Location" Binding="{Binding Location, IsAsync=True, UpdateSourceTrigger=PropertyChanged}">
                                 <DataGridTextColumn.EditingElementStyle>
                                     <Style TargetType="{x:Type TextBox}">
                                         <Setter Property="behaviors:AutoCompleteBehavior.AutoCompleteItemsSource"
-                                    Value="{Binding Data.AvailableLocations, Source={StaticResource proxy}}" />
+                                    Value="{Binding Data.AvailableLocations, IsAsync=True, Source={StaticResource proxy}}" />
                                     </Style>
                                 </DataGridTextColumn.EditingElementStyle>
                                 <!--<DataGridComboBoxColumn.ElementStyle>
@@ -149,12 +150,12 @@
                                     </Style>
                                 </DataGridComboBoxColumn.EditingElementStyle>-->
                             </DataGridTextColumn>
-                            <DataGridTextColumn Header=" IP Address" Binding="{Binding IP, UpdateSourceTrigger=LostFocus}"/>
-                            <DataGridTextColumn Header=" Output" Binding="{Binding Output, UpdateSourceTrigger=PropertyChanged}"/>
+                            <DataGridTextColumn Header=" IP Address" Binding="{Binding IP, IsAsync=True, UpdateSourceTrigger=LostFocus}"/>
+                            <DataGridTextColumn Header=" Output" Binding="{Binding Output, IsAsync=True, UpdateSourceTrigger=PropertyChanged}"/>
                             <!--<DataGridTextColumn Header=" Input" Binding="{Binding Input, UpdateSourceTrigger=PropertyChanged}" Visibility="Hidden"/>-->
-                            <DataGridTextColumn Header=" Remarks" Binding="{Binding Repair, UpdateSourceTrigger=PropertyChanged}"/>
-                            <DataGridCheckBoxColumn Header=" Scrapped" Width="Auto" Binding="{Binding IsScrapped, UpdateSourceTrigger=PropertyChanged}" ElementStyle="{StaticResource MetroDataGridCheckBox}"/>
-                            <DataGridCheckBoxColumn Header=" Active" Width="Auto" Binding="{Binding IsActive, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True">
+                            <DataGridTextColumn Header=" Remarks" Binding="{Binding Repair, IsAsync=True, UpdateSourceTrigger=PropertyChanged}"/>
+                            <DataGridCheckBoxColumn Header=" Scrapped" Width="Auto" Binding="{Binding IsScrapped, IsAsync=True, UpdateSourceTrigger=PropertyChanged}" ElementStyle="{StaticResource MetroDataGridCheckBox}"/>
+                            <DataGridCheckBoxColumn Header=" Active" Width="Auto" Binding="{Binding IsActive, IsAsync=True, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True">
                                 <DataGridCheckBoxColumn.ElementStyle>
                                     <Style TargetType="{x:Type CheckBox}">
                                         <Setter Property="IsEnabled" Value="False" />
@@ -166,10 +167,10 @@
                                                             <Style TargetType="{x:Type Image}">
                                                                 <Setter Property="Source" Value="../Images/redcircle.png" />
                                                                 <Style.Triggers>
-                                                                    <DataTrigger Binding="{Binding IsChecked, RelativeSource={RelativeSource AncestorType=CheckBox}}" Value="True">
+                                                                    <DataTrigger Binding="{Binding IsChecked, IsAsync=True, RelativeSource={RelativeSource AncestorType=CheckBox}}" Value="True">
                                                                         <Setter Property="Source" Value="../Images/greencircle.png" />
                                                                     </DataTrigger>
-                                                                    <DataTrigger Binding="{Binding IsNotActiveLessThan1Month, UpdateSourceTrigger=PropertyChanged}" Value="True">
+                                                                    <DataTrigger Binding="{Binding IsNotActiveLessThan1Month, IsAsync=True, UpdateSourceTrigger=PropertyChanged}" Value="True">
                                                                         <Setter Property="Source" Value="../Images/orangecircle.png" />
                                                                     </DataTrigger>
                                                                 </Style.Triggers>
@@ -183,12 +184,14 @@
                                 </DataGridCheckBoxColumn.ElementStyle>
                             </DataGridCheckBoxColumn>
                             <!--<DataGridCheckBoxColumn Header="Active" Binding="{Binding IsActive, UpdateSourceTrigger=PropertyChanged}"/>-->
-                            <DataGridTextColumn Header=" Last Active Time" Binding="{Binding LastActiveTime, UpdateSourceTrigger=PropertyChanged}"/>
+                            <DataGridTextColumn Header=" Last Active Time" Binding="{Binding LastActiveTime, IsAsync=True, UpdateSourceTrigger=PropertyChanged}"/>
                             <!--<DataGridCheckBoxColumn Header="Archive" Binding="{Binding IsArchive, UpdateSourceTrigger=PropertyChanged}" Visibility="Hidden"/>
                             <DataGridCheckBoxColumn Header="Modified" Binding="{Binding IsModified, UpdateSourceTrigger=PropertyChanged}" Visibility="Hidden"/>-->
-                            <DataGridTextColumn Header="ID" Binding="{Binding Id, UpdateSourceTrigger=PropertyChanged}" Visibility="Hidden"/>
+                            <DataGridTextColumn Header="ID" Binding="{Binding Id, IsAsync=True, UpdateSourceTrigger=PropertyChanged}" Visibility="Hidden"/>
                         </jibcontrols:JibGrid.Columns>
                     </jibcontrols:JibGrid>
+                    <!--</StackPanel>-->
+
                     <Button x:Name="SaveButton" Grid.Column="0" Grid.Row="0" Content="Save" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="10" Command="{Binding SaveButtonCommand}"/>
                     <Button x:Name="PingButton" Grid.Column="1" Grid.Row="0" Content="Ping" HorizontalAlignment="Right" Margin="10" VerticalAlignment="Top" Width="75" Command="{Binding PingButtonCommand}"/>
                     <Button x:Name="ReloadButton" Grid.Column="2" Grid.Row="0" Content="Reload" HorizontalAlignment="Right" Margin="10" VerticalAlignment="Top" Width="75" Command="{Binding ReloadDataCommand}"/>

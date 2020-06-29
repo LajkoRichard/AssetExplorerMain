@@ -308,7 +308,7 @@ namespace AssetExplorer.ViewModels
 
         #region Functions
 
-        private async void SaveData()
+        private void SaveData()
         {
             try
             {
@@ -316,7 +316,7 @@ namespace AssetExplorer.ViewModels
                 {
                     for (int i = 0; i < AssetsBeforeModification.Count; i++)
                     {
-                        await Context.AddAsync(AssetsBeforeModification[i]);
+                        Context.Add(AssetsBeforeModification[i]);
                     }
                     foreach (var asset in ActiveAssets)
                     {
@@ -326,8 +326,8 @@ namespace AssetExplorer.ViewModels
                         }
                     }
 
-                    await Context.SaveChangesAsync();
-                    
+                    Context.SaveChanges();
+
                     AssetsBeforeModification.Clear();
                     IsScrappedSelected = false;
                     ActiveAssets = new ObservableCollection<Asset>(Context.Assets.Where(item => item.IsArchive == false).ToList());
@@ -371,7 +371,7 @@ namespace AssetExplorer.ViewModels
             }
         }
 
-        private async void DeleteData()
+        private void DeleteData()
         {
             try
             {
@@ -386,7 +386,7 @@ namespace AssetExplorer.ViewModels
                         }
                     }
 
-                    await Context.SaveChangesAsync();
+                    Context.SaveChanges();
                     ActiveAssets = new ObservableCollection<Asset>(Context.Assets.Where(item => item.IsArchive == false).ToList());
                     ArchiveAssets = new ObservableCollection<Asset>(Context.Assets.Where(item => item.IsArchive == true).ToList());
                 }
@@ -405,7 +405,7 @@ namespace AssetExplorer.ViewModels
             }
         }
 
-        private async void AddData()
+        private void AddData()
         {
             try
             {
@@ -417,17 +417,17 @@ namespace AssetExplorer.ViewModels
                         if (SavedAsset != null)
                         {
                             SavedAsset.IsArchive = true;
-                            await Context.AddAsync(AssetsToBeAdded[i]);
+                            Context.Add(AssetsToBeAdded[i]);
                             Logger.Info("Asset successfully added: {0}", AssetsToBeAdded[i].Serial);
                             continue;
                         }
 
                         AssetsToBeAdded[i].IsArchive = false;
-                        await Context.AddAsync(AssetsToBeAdded[i]);
+                        Context.Add(AssetsToBeAdded[i]);
                         Logger.Info("Asset successfully added: {0}", AssetsToBeAdded[i].Serial);
                     }
 
-                    await Context.SaveChangesAsync();
+                    Context.SaveChanges();
                     AssetsToBeAdded.Clear();
                     ActiveAssets = new ObservableCollection<Asset>(Context.Assets.Where(item => item.IsArchive == false).ToList());
                 }
@@ -530,6 +530,11 @@ namespace AssetExplorer.ViewModels
         {
             try
             {
+                if (asset.IP == null)
+                {
+                    return;
+                }
+
                 var reply = await ping.SendPingAsync(asset.IP, 100);
 
                 if (reply.Status == IPStatus.Success)
@@ -579,6 +584,7 @@ namespace AssetExplorer.ViewModels
         {
             for (int i = 0; i < ActiveAssets.Count; i++)
             {
+                var timespan = (DateTime.Now - ActiveAssets[i].LastActiveTime).TotalDays;
                 if ((DateTime.Now - ActiveAssets[i].LastActiveTime).TotalDays < 30)
                 {
                     ActiveAssets[i].IsNotActiveLessThan1Month = true;
