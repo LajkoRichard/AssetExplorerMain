@@ -47,10 +47,7 @@
                         <views:BindingProxy x:Key="proxy" Data="{Binding}" />
                     </Grid.Resources>
 
-                    <jibcontrols:JibGrid Grid.ColumnSpan="6" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" AutoGenerateColumns="False" CanUserFreeze="True" CanUserSelectDistinct="True" CanUserGroup="True" CanUserFilter="True" x:Name="dataGridActive" Margin="10" ColumnWidth="*" FilteredItemsSource="{Binding ActiveAssets, UpdateSourceTrigger=PropertyChanged}" CanUserAddRows="False" CanUserDeleteRows="False" SelectionMode="Extended" SelectionUnit="FullRow" SelectedItem="{Binding AssetSelected}" controls:DataGridHelper.EnableCellEditAssist="True" Style="{StaticResource MetroDataGrid}">
-                        <!--<jibcontrols:JibGrid.Resources>
-                            <views:BindingProxy x:Key="proxy" Data="{Binding}" />
-                        </jibcontrols:JibGrid.Resources>-->
+                    <jibcontrols:JibGrid Grid.ColumnSpan="6" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" AutoGenerateColumns="False" CanUserFreeze="True" CanUserSelectDistinct="True" CanUserGroup="True" CanUserFilter="True" x:Name="dataGridActive" Margin="10" ColumnWidth="*" FilteredItemsSource="{Binding ActiveAssets, UpdateSourceTrigger=PropertyChanged}" CanUserAddRows="False" CanUserDeleteRows="False" SelectionMode="Extended" SelectionUnit="FullRow" SelectedItem="{Binding AssetSelected}" controls:DataGridHelper.EnableCellEditAssist="True" Style="{StaticResource MetroDataGrid}" ScrollViewer.IsDeferredScrollingEnabled="True">
                         <DataGrid.GroupStyle>
                             <GroupStyle>
                                 <GroupStyle.HeaderTemplate>
@@ -138,16 +135,6 @@
                                     Value="{Binding Data.AvailableLocations, Source={StaticResource proxy}}" />
                                     </Style>
                                 </DataGridTextColumn.EditingElementStyle>
-                                <!--<DataGridComboBoxColumn.ElementStyle>
-                                    <Style TargetType="ComboBox">
-                                        <Setter Property="ItemsSource" Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.Location}"/>
-                                    </Style>
-                                </DataGridComboBoxColumn.ElementStyle>
-                                <DataGridComboBoxColumn.EditingElementStyle>
-                                    <Style TargetType="ComboBox">
-                                        <Setter Property="ItemsSource" Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.Location}"/>
-                                    </Style>
-                                </DataGridComboBoxColumn.EditingElementStyle>-->
                             </DataGridTextColumn>
                             <DataGridTextColumn Header=" IP Address" Binding="{Binding IP, UpdateSourceTrigger=LostFocus}"/>
                             <DataGridTextColumn Header=" Output" Binding="{Binding Output, UpdateSourceTrigger=PropertyChanged}"/>
@@ -166,10 +153,10 @@
                                                             <Style TargetType="{x:Type Image}">
                                                                 <Setter Property="Source" Value="../Images/redcircle.png" />
                                                                 <Style.Triggers>
-                                                                    <DataTrigger Binding="{Binding IsChecked, RelativeSource={RelativeSource AncestorType=CheckBox}}" Value="True">
+                                                                    <DataTrigger Binding="{Binding IsChecked, RelativeSource={RelativeSource AncestorType=CheckBox}, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Value="True">
                                                                         <Setter Property="Source" Value="../Images/greencircle.png" />
                                                                     </DataTrigger>
-                                                                    <DataTrigger Binding="{Binding IsNotActiveLessThan1Month, UpdateSourceTrigger=PropertyChanged}" Value="True">
+                                                                    <DataTrigger Binding="{Binding IsNotActiveLessThan1Month, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Value="True">
                                                                         <Setter Property="Source" Value="../Images/orangecircle.png" />
                                                                     </DataTrigger>
                                                                 </Style.Triggers>
@@ -260,6 +247,7 @@
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
@@ -267,7 +255,8 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <jibcontrols:JibGrid Grid.ColumnSpan="2" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" AutoGenerateColumns="False"   CanUserFreeze="True" CanUserSelectDistinct="True" CanUserGroup="True" CanUserFilter="True" Name="dataGridArchive" Margin="10" ColumnWidth="*" FilteredItemsSource="{Binding ArchiveAssets}" CanUserAddRows="False" controls:DataGridHelper.EnableCellEditAssist="True" Style="{StaticResource MetroDataGrid}">
+                    <Button x:Name="DeleteHistoryButton" Grid.Column="1" Grid.Row="1" Content="Delete" HorizontalAlignment="Right" VerticalAlignment="Center" Width="75" Margin="10" Command="{Binding DeleteHistoryButtonCommand}"/>
+                    <jibcontrols:JibGrid Grid.ColumnSpan="2" Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" AutoGenerateColumns="False"   CanUserFreeze="True" CanUserSelectDistinct="True" CanUserGroup="True" CanUserFilter="True" Name="dataGridArchive" Margin="10" ColumnWidth="*" FilteredItemsSource="{Binding ArchiveAssets}" SelectedItem="{Binding HistoricalAssetSelected, UpdateSourceTrigger=PropertyChanged}" CanUserAddRows="False" controls:DataGridHelper.EnableCellEditAssist="True" Style="{StaticResource MetroDataGrid}">
                         <DataGrid.GroupStyle>
                             <GroupStyle>
                                 <GroupStyle.HeaderTemplate>

@@ -119,6 +119,18 @@ namespace AssetExplorer.ViewModels
             }
         }
 
+        private Asset _historicalAssetSelected;
+
+        public Asset HistoricalAssetSelected
+        {
+            get => _historicalAssetSelected;
+            set
+            {
+                _historicalAssetSelected = value;
+                OnPropertyChanged();
+            }
+        }
+
         private object _lockObject;
 
         public object LockObject
@@ -302,6 +314,14 @@ namespace AssetExplorer.ViewModels
                    x =>
                    {
                        CheckActiveDate();
+                   }));
+
+        private ICommand _deletehistorybuttoncommand;
+
+        public ICommand DeleteHistoryButtonCommand => _deletehistorybuttoncommand ?? (_deletehistorybuttoncommand = new RelayCommand.RelayCommand(
+                   x =>
+                   {
+                       DeleteHistoryData();
                    }));
 
         #endregion
@@ -579,11 +599,16 @@ namespace AssetExplorer.ViewModels
         {
             for (int i = 0; i < ActiveAssets.Count; i++)
             {
-                if ((DateTime.Now - ActiveAssets[i].LastActiveTime).TotalDays < 30)
+                if ((DateTime.Now - ActiveAssets[i].LastActiveTime).TotalDays < 30 && (DateTime.Now - ActiveAssets[i].LastActiveTime).TotalDays > 2)
                 {
                     ActiveAssets[i].IsNotActiveLessThan1Month = true;
                 }
             }
+        }
+
+        private void DeleteHistoryData()
+        {
+
         }
 
         #endregion
