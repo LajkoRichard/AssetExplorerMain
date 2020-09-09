@@ -276,6 +276,22 @@ namespace AssetExplorer.ViewModels
                        UnCheckSelection(x as object);
                    }));
 
+        private ICommand _checkarchiveselectioncommand;
+
+        public ICommand CheckArchiveSelectionCommand => _checkarchiveselectioncommand ?? (_checkarchiveselectioncommand = new RelayCommand.RelayCommand(
+                   x =>
+                   {
+                       CheckArchiveSelection(x as object);
+                   }));
+
+        private ICommand _uncheckarchiveselectioncommand;
+
+        public ICommand UnCheckArchiveSelectionCommand => _uncheckarchiveselectioncommand ?? (_uncheckarchiveselectioncommand = new RelayCommand.RelayCommand(
+                   x =>
+                   {
+                       UnCheckArchiveSelection(x as object);
+                   }));
+
         private ICommand _reloaddatacommand;
 
         public ICommand ReloadDataCommand => _reloaddatacommand ?? (_reloaddatacommand = new RelayCommand.RelayCommand(
@@ -501,6 +517,24 @@ namespace AssetExplorer.ViewModels
             }
         }
 
+        private void CheckArchiveSelection(object selectedrows)
+        {
+            var collection = (IList)selectedrows;
+            for (int i = 0; i < collection.Count; i++)
+            {
+                (collection[i] as Asset).IsSelected = true;
+            }
+        }
+
+        private void UnCheckArchiveSelection(object selectedrows)
+        {
+            var collection = (IList)selectedrows;
+            for (int i = 0; i < collection.Count; i++)
+            {
+                (collection[i] as Asset).IsSelected = false;
+            }
+        }
+
         private void ReloadData()
         {
             ActiveAssets = new ObservableCollection<Asset>(Context.Assets.Where(item => item.IsArchive == false).ToList());
@@ -608,7 +642,19 @@ namespace AssetExplorer.ViewModels
 
         private void DeleteHistoryData()
         {
+            if (MessageBox.Show("Are you sure that you want to delete the data", "Alert", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+            {
+                foreach (var archiveasset in ArchiveAssets)
+                {
+                    if (archiveasset.IsSelected)
+                    {
+                        Context.Assets.Remove(archiveasset);
+                        Context.SaveChanges();
+                    }
+                }
 
+                ArchiveAssets = new ObservableCollection<Asset>(Context.Assets.Where(item => item.IsArchive == true).ToList());
+            }
         }
 
         #endregion

@@ -141,7 +141,7 @@
                             <!--<DataGridTextColumn Header=" Input" Binding="{Binding Input, UpdateSourceTrigger=PropertyChanged}" Visibility="Hidden"/>-->
                             <DataGridTextColumn Header=" Remarks" Binding="{Binding Repair, UpdateSourceTrigger=PropertyChanged}"/>
                             <DataGridCheckBoxColumn Header=" Scrapped" Width="Auto" Binding="{Binding IsScrapped, UpdateSourceTrigger=PropertyChanged}" ElementStyle="{StaticResource MetroDataGridCheckBox}"/>
-                            <DataGridCheckBoxColumn Header=" Active" Width="Auto" Binding="{Binding IsActive, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True">
+                            <DataGridCheckBoxColumn Header=" Active" Width="Auto" Binding="{Binding IsActive, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsReadOnly="True">
                                 <DataGridCheckBoxColumn.ElementStyle>
                                     <Style TargetType="{x:Type CheckBox}">
                                         <Setter Property="IsEnabled" Value="False" />
@@ -290,7 +290,24 @@
                             </GroupStyle>
                         </DataGrid.GroupStyle>
                         <jibcontrols:JibGrid.Columns>
-                            <DataGridCheckBoxColumn Header="Selected" Binding="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged}" Visibility="Hidden"/>
+                            <DataGridTemplateColumn Header=" Selected" Width="Auto" SortMemberPath="IsSelected">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <CheckBox HorizontalAlignment="Center" VerticalAlignment="Center" IsChecked="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged}">
+                                            <i:Interaction.Triggers>
+                                                <i:EventTrigger EventName="Checked">
+                                                    <i:InvokeCommandAction CommandParameter="{Binding Path=SelectedItems, RelativeSource={RelativeSource FindAncestor, AncestorType=jibcontrols:JibGrid}}"
+                                                                           Command="{Binding DataContext.CheckArchiveSelectionCommand, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}" />
+                                                </i:EventTrigger>
+                                                <i:EventTrigger EventName="Unchecked">
+                                                    <i:InvokeCommandAction CommandParameter="{Binding Path=SelectedItems, RelativeSource={RelativeSource FindAncestor, AncestorType=jibcontrols:JibGrid}}"
+                                                                           Command="{Binding DataContext.UnCheckArchiveSelectionCommand, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}" />
+                                                </i:EventTrigger>
+                                            </i:Interaction.Triggers>
+                                        </CheckBox>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
                             <DataGridTextColumn Header="Device Type" Binding="{Binding DeviceType, UpdateSourceTrigger=PropertyChanged}"/>
                             <DataGridTextColumn Header="Serial number" Binding="{Binding Serial, UpdateSourceTrigger=PropertyChanged}"/>
                             <DataGridTextColumn Header="MAC Address" Binding="{Binding MAC, UpdateSourceTrigger=PropertyChanged}"/>
