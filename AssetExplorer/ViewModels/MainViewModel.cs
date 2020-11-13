@@ -553,6 +553,23 @@ namespace AssetExplorer.ViewModels
 
                 for (int i = 0; i < ActiveAssets.Count; i++)
                 {
+                    if (string.IsNullOrWhiteSpace(ActiveAssets[i].IP) || !ActiveAssets[i].IP.StartsWith("106.114."))
+                    {
+                        continue;
+                    }
+
+                    string IPAddressOfCurrentAsset = ActiveAssets[i].IP ?? "";
+                    var parts = IPAddressOfCurrentAsset.Split('.');
+                    bool isValidIPAddress = parts.Length == 4 && !parts.Any(
+                       x =>
+                       {
+                           return Int32.TryParse(x, out int y) && y > 255 || y < 1;
+                       });
+                    if (!isValidIPAddress)
+                    {
+                        continue;
+                    }
+
                     Ping p = new Ping();
                     var task = PingAndUpdateAsync(p, ActiveAssets[i]);
                     tasks.Add(task);
@@ -568,15 +585,21 @@ namespace AssetExplorer.ViewModels
             }
             catch (NullReferenceException ex)
             {
-                Logger.Error(ex.Message);
+                MessageBox.Show(ex.Message);
+                Logger.Error(ex.Message, "NullReferenceException");
+                throw new Exception(ex.Message);
             }
             catch (DbUpdateException ex)
             {
-                Logger.Error(ex.Message);
+                MessageBox.Show(ex.Message);
+                Logger.Error(ex.Message, "DbUpdateException");
+                throw new Exception(ex.Message);
             }
             catch (Exception ex)
             {
-                Logger.Error(ex.Message);
+                MessageBox.Show(ex.Message);
+                Logger.Error(ex.Message, "Exception");
+                throw new Exception(ex.Message);
             }
         }
 
@@ -607,15 +630,18 @@ namespace AssetExplorer.ViewModels
             }
             catch (NullReferenceException ex)
             {
-                Logger.Error(ex.Message);
+                Logger.Error(ex.Message, "NullReferenceException");
+                throw new Exception(ex.Message);
             }
             catch (DbUpdateException ex)
             {
-                Logger.Error(ex.Message);
+                Logger.Error(ex.Message, "DbUpdateException");
+                throw new Exception(ex.Message);
             }
             catch (Exception ex)
             {
-                Logger.Error(ex.Message);
+                Logger.Error(ex.Message, "Exception");
+                throw new Exception(ex.Message);
             }
         }
 
@@ -633,6 +659,11 @@ namespace AssetExplorer.ViewModels
         {
             for (int i = 0; i < ActiveAssets.Count; i++)
             {
+                if ((DateTime.Now - ActiveAssets[i].LastActiveTime).TotalDays < 2)
+                {
+                    ActiveAssets[i].IsActive = true;
+                }
+
                 if ((DateTime.Now - ActiveAssets[i].LastActiveTime).TotalDays < 30 && (DateTime.Now - ActiveAssets[i].LastActiveTime).TotalDays > 2)
                 {
                     ActiveAssets[i].IsNotActiveLessThan1Month = true;
