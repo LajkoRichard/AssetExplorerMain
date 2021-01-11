@@ -14,6 +14,7 @@ using Microsoft.EntityFrameworkCore.Internal;
 using System.Collections;
 using NLog;
 using Microsoft.EntityFrameworkCore;
+using System.IO;
 
 namespace AssetExplorer.ViewModels
 {
@@ -187,6 +188,20 @@ namespace AssetExplorer.ViewModels
             }
         }
 
+        //FilePath
+        private string _filePath;
+
+        public string FilePath
+        {
+            get => _filePath;
+            set 
+            { 
+                _filePath = value;
+                OnPropertyChanged();
+            }
+        }
+
+
         #endregion
 
         #region Constructor
@@ -340,6 +355,14 @@ namespace AssetExplorer.ViewModels
                        DeleteHistoryData();
                    }));
 
+        private ICommand _loadscriptbuttoncommand;
+
+        public ICommand LoadScriptButtonCommand => _loadscriptbuttoncommand ?? (_loadscriptbuttoncommand = new RelayCommand.RelayCommand(
+                   x =>
+                   {
+                       LoadScriptResultsAndOverwriteAssets();
+                   }));
+
         #endregion
 
         #region Functions
@@ -366,8 +389,7 @@ namespace AssetExplorer.ViewModels
                     
                     AssetsBeforeModification.Clear();
                     IsScrappedSelected = false;
-                    ActiveAssets = new ObservableCollection<Asset>(Context.Assets.Where(item => item.IsArchive == false).ToList());
-                    ArchiveAssets = new ObservableCollection<Asset>(Context.Assets.Where(item => item.IsArchive == true).ToList());
+                    ReloadData();
                 }
             }
             catch (NullReferenceException ex)
@@ -411,7 +433,7 @@ namespace AssetExplorer.ViewModels
         {
             try
             {
-                if (MessageBox.Show("Are you sure that want to delete the selected data?", "Alert", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                if (MessageBox.Show("Are you sure that you want to delete the selected data?", "Alert", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
                 {
                     for (int i = 0; i < ActiveAssets.Count; i++)
                     {
@@ -423,8 +445,8 @@ namespace AssetExplorer.ViewModels
                     }
 
                     await Context.SaveChangesAsync();
-                    ActiveAssets = new ObservableCollection<Asset>(Context.Assets.Where(item => item.IsArchive == false).ToList());
-                    ArchiveAssets = new ObservableCollection<Asset>(Context.Assets.Where(item => item.IsArchive == true).ToList());
+
+                    ReloadData();
                 }
             }
             catch (NullReferenceException ex)
@@ -445,7 +467,7 @@ namespace AssetExplorer.ViewModels
         {
             try
             {
-                if (MessageBox.Show("Are you sure that want to add the data?", "Alert", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                if (MessageBox.Show("Are you sure that you want to add the data?", "Alert", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
                 {
                     for (int i = 0; i < AssetsToBeAdded.Count; i++)
                     {
@@ -685,6 +707,54 @@ namespace AssetExplorer.ViewModels
                 }
 
                 ArchiveAssets = new ObservableCollection<Asset>(Context.Assets.Where(item => item.IsArchive == true).ToList());
+            }
+        }
+
+        private void LoadScriptResultsAndOverwriteAssets()
+        {
+            try
+            {
+                string[] readText = File.ReadAllLines(FilePath);
+
+                for (int i = 0; i < readText.Length; i++)
+                {
+                    string[] assetParameters = readText[i].Split(',');
+
+                    Asset AssetToBeChanged = Context.Assets.Where(item => item.Serial == assetParameters[1]).FirstOrDefault();
+
+                    if (AssetToBeChanged == null)
+                    {
+                        continue;
+                    }
+
+                    AssetToBeChanged.DeviceType = assetParameters[0];
+                    AssetToBeChanged.MAC = assetParameters[2];
+                    AssetToBeChanged.User = assetParameters[3];
+                    AssetToBeChanged.Knox = assetParameters[4];
+                    AssetToBeChanged.Department = assetParameters[5];
+                    AssetToBeChanged.Location = assetParameters[6];
+                    AssetToBeChanged.IP = assetParameters[7];
+                    AssetToBeChanged.Output = assetParameters[8];
+
+                    Context.SaveChanges();
+
+                    ActiveAssets = new ObservableCollection<Asset>(Context.Assets.Where(item => item.IsArchive == false).ToList());
+                }
+            }
+            catch (NullReferenceException ex)
+            {
+                Logger.Error(ex.Message, "NullReferenceException");
+                throw new Exception(ex.Message);
+            }
+            catch (DbUpdateException ex)
+            {
+                Logger.Error(ex.Message, "DbUpdateException");
+                throw new Exception(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex.Message, "Exception");
+                throw new Exception(ex.Message);
             }
         }
 

@@ -41,13 +41,16 @@
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <Grid.Resources>
                         <views:BindingProxy x:Key="proxy" Data="{Binding}" />
                     </Grid.Resources>
 
-                    <jibcontrols:JibGrid Grid.ColumnSpan="6" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" AutoGenerateColumns="False" CanUserFreeze="True" CanUserSelectDistinct="True" CanUserGroup="True" CanUserFilter="True" x:Name="dataGridActive" Margin="10" ColumnWidth="*" FilteredItemsSource="{Binding ActiveAssets, UpdateSourceTrigger=PropertyChanged}" CanUserAddRows="False" CanUserDeleteRows="False" SelectionMode="Extended" SelectionUnit="FullRow" SelectedItem="{Binding AssetSelected}" controls:DataGridHelper.EnableCellEditAssist="True" Style="{StaticResource MetroDataGrid}" ScrollViewer.IsDeferredScrollingEnabled="True">
+                    <jibcontrols:JibGrid Grid.ColumnSpan="9" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" AutoGenerateColumns="False" CanUserFreeze="True" CanUserSelectDistinct="True" CanUserGroup="True" CanUserFilter="True" x:Name="dataGridActive" Margin="10" ColumnWidth="*" FilteredItemsSource="{Binding ActiveAssets, UpdateSourceTrigger=PropertyChanged}" CanUserAddRows="False" CanUserDeleteRows="False" SelectionMode="Extended" SelectionUnit="FullRow" SelectedItem="{Binding AssetSelected}" controls:DataGridHelper.EnableCellEditAssist="True" Style="{StaticResource MetroDataGrid}" ScrollViewer.IsDeferredScrollingEnabled="True">
                         <DataGrid.GroupStyle>
                             <GroupStyle>
                                 <GroupStyle.HeaderTemplate>
@@ -180,8 +183,13 @@
                     <Button x:Name="PingButton" Grid.Column="1" Grid.Row="0" Content="Ping" HorizontalAlignment="Right" Margin="10" VerticalAlignment="Top" Width="75" Command="{Binding PingButtonCommand}"/>
                     <Button x:Name="ReloadButton" Grid.Column="2" Grid.Row="0" Content="Reload" HorizontalAlignment="Right" Margin="10" VerticalAlignment="Top" Width="75" Command="{Binding ReloadDataCommand}"/>
                     <CheckBox x:Name="SelectAllCheckbox" Grid.Column="3" Grid.Row="0" Content="Select all" HorizontalAlignment="Left" VerticalAlignment="Center" Width="Auto" Margin="10" CommandParameter="{Binding ElementName=SelectAllCheckbox, Path=IsChecked}" Command="{Binding SelectAllCommand}"/>
-                    <Button x:Name="DeleteButton" Grid.Column="5" Grid.Row="0" Content="Delete" HorizontalAlignment="Right" Margin="10" VerticalAlignment="Top" Width="75" CommandParameter="{Binding ElementName=dataGridActive, Path=SelectedItems}" Command="{Binding DeleteButtonCommand}"/>
-                    <Expander x:Name="expander" Header="Add Assets" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="2" Grid.ColumnSpan="6">
+                    <Button x:Name="BrowseButton" Grid.Column="5" Grid.Row="0" Content="Browse" HorizontalAlignment="Right" Margin="10" VerticalAlignment="Top" Width="75"  Click="BrowseButton_Click"/>
+                    <TextBox x:Name="FilePathTextBox" Grid.Column="6" Grid.Row="0" HorizontalAlignment="Right" Margin="10" VerticalAlignment="Top" Width="500" Text="{Binding FilePath, UpdateSourceTrigger=PropertyChanged}" />
+                    <Button x:Name="LoadButton" Grid.Column="7" Grid.Row="0" Content="Load Script Data" HorizontalAlignment="Right" Margin="10" VerticalAlignment="Top" Width="Auto" Command="{Binding LoadScriptButtonCommand}"/>
+
+                    <Button x:Name="DeleteButton" Grid.Column="8" Grid.Row="0" Content="Delete" HorizontalAlignment="Right" Margin="10" VerticalAlignment="Top" Width="75" CommandParameter="{Binding ElementName=dataGridActive, Path=SelectedItems}" Command="{Binding DeleteButtonCommand}"/>
+
+                    <Expander x:Name="expander" Header="Add Assets" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="2" Grid.ColumnSpan="9">
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="Expanded">
                                 <i:InvokeCommandAction Command="{Binding OnExpanderExpandedCommand}"/>
