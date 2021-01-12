@@ -726,7 +726,7 @@ namespace AssetExplorer.ViewModels
                 {
                     string[] assetParameters = readText[i].Split(',');
 
-                    Asset AssetToBeChanged = Context.Assets.Where(item => item.Serial == assetParameters[1]).FirstOrDefault();
+                    Asset AssetToBeChanged = Context.Assets.Where(item => item.Serial == assetParameters[1] && item.IsActive == true && item.IsArchive == false).FirstOrDefault();
 
                     if (AssetToBeChanged == null)
                     {
