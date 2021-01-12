@@ -714,6 +714,12 @@ namespace AssetExplorer.ViewModels
         {
             try
             {
+                if (string.IsNullOrWhiteSpace(FilePath))
+                {
+                    MessageBox.Show("The file path textbox is empty!", "File path missing", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
                 string[] readText = File.ReadAllLines(FilePath);
 
                 for (int i = 0; i < readText.Length; i++)
@@ -739,6 +745,8 @@ namespace AssetExplorer.ViewModels
                     Context.SaveChanges();
 
                     ActiveAssets = new ObservableCollection<Asset>(Context.Assets.Where(item => item.IsArchive == false).ToList());
+
+                    MessageBox.Show("The script data has been loaded!", "Finished", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
             }
             catch (NullReferenceException ex)
