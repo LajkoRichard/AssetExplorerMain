@@ -726,28 +726,27 @@ namespace AssetExplorer.ViewModels
                 {
                     string[] assetParameters = readText[i].Split(',');
 
-                    Asset AssetToBeChanged = Context.Assets.Where(item => item.Serial == assetParameters[1] && item.IsActive == true && item.IsArchive == false).FirstOrDefault();
+                    Asset AssetToBeChanged = Context.Assets.Where(item => item.Serial == assetParameters[1] && item.IsArchive == false).FirstOrDefault();
 
                     if (AssetToBeChanged == null)
                     {
                         continue;
                     }
 
-                    AssetToBeChanged.DeviceType = assetParameters[0];
-                    AssetToBeChanged.MAC = assetParameters[2];
-                    AssetToBeChanged.User = assetParameters[3];
-                    AssetToBeChanged.Knox = assetParameters[4];
-                    AssetToBeChanged.Department = assetParameters[5];
-                    AssetToBeChanged.Location = assetParameters[6];
-                    AssetToBeChanged.IP = assetParameters[7];
-                    AssetToBeChanged.Output = assetParameters[8];
+                    AssetToBeChanged.DeviceType = string.IsNullOrWhiteSpace(assetParameters[0]) ? AssetToBeChanged.DeviceType : assetParameters[0];
+                    AssetToBeChanged.MAC = string.IsNullOrWhiteSpace(assetParameters[2]) ? AssetToBeChanged.DeviceType : assetParameters[2];
+                    AssetToBeChanged.User = string.IsNullOrWhiteSpace(assetParameters[3]) ? AssetToBeChanged.DeviceType : assetParameters[3];
+                    AssetToBeChanged.Knox = string.IsNullOrWhiteSpace(assetParameters[4]) ? AssetToBeChanged.DeviceType : assetParameters[4];
+                    AssetToBeChanged.Department = string.IsNullOrWhiteSpace(assetParameters[5]) ? AssetToBeChanged.DeviceType : assetParameters[5];
+                    AssetToBeChanged.Location = string.IsNullOrWhiteSpace(assetParameters[6]) ? AssetToBeChanged.DeviceType : assetParameters[6];
+                    AssetToBeChanged.IP = string.IsNullOrWhiteSpace(assetParameters[7]) ? AssetToBeChanged.DeviceType : assetParameters[7];
+                    AssetToBeChanged.Output = string.IsNullOrWhiteSpace(assetParameters[8]) ? AssetToBeChanged.DeviceType : assetParameters[8];
 
                     Context.SaveChanges();
 
                     ActiveAssets = new ObservableCollection<Asset>(Context.Assets.Where(item => item.IsArchive == false).ToList());
-
-                    MessageBox.Show("The script data has been loaded!", "Finished", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
+                MessageBox.Show("The script data has been loaded!", "Finished", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (NullReferenceException ex)
             {
